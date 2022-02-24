@@ -358,10 +358,55 @@ def draw_dead_end(d):
           elif d[1] == (3, 1):             
               pyxel.rect(50, 29, 156, 93, 0)
               pyxel.rectb(50, 29, 156, 93, 2)                    
-
+              
+              pyxel.circb(128, 60, 25, 7)
+              pyxel.circb(128, 93, 25, 7)
+              pyxel.rect(103, 50, 51, 54, 0)
+              pyxel.rectb(103, 50, 51, 54, 7)
+              
+              pyxel.line(106, 50, 150, 50, 0)
+              pyxel.line(106, 103, 150, 103, 0)
+              
+              pyxel.line(107, 50, 107, 103, 7)
+              
+              pyxel.rectb(103, 59, 10, 5, 7)
+              pyxel.rectb(103, 89, 10, 5, 7)
+              
+              #pyxel.circ(128, 58, 10, 7)
+              pyxel.circb(128, 58, 10, 7)
+              
+              pyxel.circb(145, 78, 6, 7)
+              pyxel.line(139, 78, 150, 78, 7)
+              pyxel.line(145, 73, 145, 84, 7)
+              
           elif d[1] == (4, 1):             
               pyxel.rect(50, 29, 156, 93, 0)
-              pyxel.rectb(50, 29, 156, 93, 7)      
+              pyxel.rectb(50, 29, 156, 93, 7)                                                        
+              
+              pyxel.rect(122, 68, 15, 25, 3)                          
+              pyxel.rectb(122, 68, 15, 25, 7)                          
+              
+              pyxel.rect(125, 70, 9, 20, 0)                          
+              pyxel.rectb(125, 70, 9, 20, 1)                          
+              
+              pyxel.rect(127, 60, 5, 15, 0)
+              pyxel.rectb(127, 60, 5, 15, 7)
+              
+              pyxel.rect(122, 60, 15, 5, 8)
+              pyxel.rectb(122, 60, 15, 5, 7)                            
+              
+              pyxel.rect(103, 50, 5, 54, 10)
+              pyxel.rectb(103, 50, 5, 54, 13)                            
+              pyxel.rect(113, 50, 5, 54, 10)
+              pyxel.rectb(113, 50, 5, 54, 13)                            
+
+              pyxel.rect(149, 50, 5, 54, 10)
+              pyxel.rectb(149, 50, 5, 54, 13)                                          
+              pyxel.rect(140, 50, 5, 54, 10)
+              pyxel.rectb(140, 50, 5, 54, 13)                                                        
+              
+              pyxel.rectb(103, 50, 51, 54, 13)      
+              
 
           elif d[1] == (5, 1):             
               pyxel.rect(50, 29, 156, 93, 0)
@@ -381,11 +426,21 @@ def draw_dead_end(d):
           elif d[1] == (3, 1):
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 2)          
-              #pyxel.rectb(106, 54, 44, 42, 9)
+              
+              pyxel.circb(128, 61, 13, 7)
+              pyxel.circb(128, 88, 13, 7)
+              pyxel.rect(115, 55, 27, 40, 0)
+              pyxel.rectb(115, 55, 27, 40, 7)           
+              
+              pyxel.line(116, 55, 140, 55, 0)
+              pyxel.line(116, 94, 140, 94, 0)
+              
           elif d[1] == (4, 1):
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 7)          
-              #pyxel.rectb(106, 54, 44, 42, 9)
+              
+              pyxel.rectb(114, 60, 30, 30, 13)      
+              
           elif d[1] == (5, 1):
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 7)          
@@ -405,11 +460,14 @@ def draw_dead_end(d):
           elif d[1] == (3, 1):
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 2)           
-              #pyxel.rectb(115, 62, 28, 25, 9)
+              
+              pyxel.rectb(119, 59, 20, 32, 7)       
+              
           elif d[1] == (4, 1):
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 7)           
-              #pyxel.rectb(115, 62, 28, 25, 9)
+              pyxel.rectb(120, 67, 17, 17, 13)
+              
           elif d[1] == (5, 1):
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 7)           
