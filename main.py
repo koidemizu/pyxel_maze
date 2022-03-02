@@ -9,6 +9,11 @@ class APP:
       pyxel.init(256, 256, title = "pyxel")
       pyxel.load('assets/assets.pyxres')             
       
+      self.status_set() 
+     
+      pyxel.run(self.update, self.draw)
+     
+  def status_set(self):        
       #Maze set
       self.data = []
       self.maze = []
@@ -54,8 +59,11 @@ class APP:
               self.dead_end[0] = i1      
       self.dead_end = [0, (0, 0)]
       
-      self.wall_list = [(1, 0), (1, 1), (2, 1),
-                        (3, 1), (4, 1), (5, 1)]
+      self.wall_list = [(1, 0), (3, 0), (4, 0), (5, 0), (6, 0), 
+                        (1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]
+      
+      self.wall_list_n = [(1, 0), (3, 0), (4, 0), (5, 0), (6, 0),]
+                        
       
       #Floor
       self.floor = [0, 0, 0, 0]
@@ -86,108 +94,48 @@ class APP:
       self.e_msg = "Enemies nearby: X"      
       self.e_msg_c = 0
       self.e_msg_F = False
-      
-      self.game_msg = Game_msg.GameMsg()      
-      pyxel.run(self.update, self.draw)
-     
-  def reset(self):        
-      #Player position
-      self.pos = [1, 1]     
-      
-      self.paint_cnt = 5
-      self.move_flag = False      
-      self.pos_angle = 3
-      self.key_flag = False
-      
-      #Wall set
-      self.wall = [[0, 0],
-                   [0, 0],
-                   [0, 0],
-                   [0, 0],]
-      
-      for i1 in range(5):
-          x1 = self.pos[1] - (1 * i1)
-          if self.maze[x1][self.pos[0]] == 1:
-              self.dead_end[0] = i1      
-      self.dead_end = [0, (0, 0)]
-      
-      #Floor
-      self.floor = [0, 0, 0, 0]
-      
-      #Bubble
-      self.bubbles = [] 
-      self.bubble_cnt = 0      
-      #Bubble color list
-      self.bub_c = (1, 5, 6, 12)
-      
-      #Enemy
-      self.enemys = []      
-      
-      for e in self.enemy_set:
-          self.enemys.append(eC.Enemy(e[0], e[1], self.maze, self.move_permit))            
-      self.enemy_pos = 9
-      
-      #System
-      self.game_over = False
-      self.e_msg = "Enemies nearby: X"      
-      self.e_msg_c = 0
-      self.e_msg_F = False
+      self.key_ipt = False
+      self.key_ipt_num = (0, 0)
       
       self.game_msg = Game_msg.GameMsg()      
       
   def update(self): 
-      print(self.enemy_pos)
-      print(pyxel.mouse_x, pyxel.mouse_y)
-      #Bubble generate test---------------------------------------------------
-      if pyxel.btnp(pyxel.KEY_B):
-          c = choice(self.bub_c)
-          x = pyxel.rndi(0, 256)
-          y = pyxel.rndi(160, 220)
-          v = pyxel.rndi(0, 2)
-          s1 = pyxel.rndi(1, 2)
-          s2 = pyxel.rndi(1, 9) / 10
-          s = s1 + s2
-          new_bubble = bC.Bubble(x, y, v, c, s)
-          self.bubbles.append(new_bubble)
-      #-----------------------------------------------------------------------
+      #print(self.pos)
+      print(pyxel.mouse_x, pyxel.mouse_y)        
       
-      if pyxel.btnp(pyxel.KEY_M):
-          self.game_msg.update("Test M", 3)
-          
-      #Game Over Move---------------------------------------------------------    
-      if self.game_over == True and pyxel.btnp(pyxel.KEY_R):
-          self.reset()
-      if self.game_over == True and pyxel.btnp(pyxel.KEY_Q):
-          pyxel.quit()
-      #-----------------------------------------------------------------------          
+      self.bubble_update()
 
-      #New bubble create------------------------------------------------------
-      if self.bubble_cnt == 0:
-          self.bubble_cnt = pyxel.rndi(200, 400)
-          b_num = pyxel.rndi(2, 10)
-          for bn in range(b_num):
-              c = choice(self.bub_c)
-              x = pyxel.rndi(30, 220)
-              y = pyxel.rndi(160, 220)
-              v = pyxel.rndi(0, 2)
-              s1 = pyxel.rndi(1, 2)
-              s2 = pyxel.rndi(1, 9) / 10
-              s = s1 + s2
-              new_bubble = bC.Bubble(x, y, v, c, s)
-              self.bubbles.append(new_bubble)
-              
-      #Bubble update----------------------------------------------------------      
-      b_mi = pyxel.rndi(1, 10)
-      self.bubble_cnt -= b_mi
-      for b in self.bubbles:
-          b.update()
-          if b.bub_y < 0:
-              del b              
-       #----------------------------------------------------------------------      
       if self.game_over == True:
-          pass
+          if pyxel.btnp(pyxel.KEY_R):
+              self.status_set()
+          elif pyxel.btnp(pyxel.KEY_Q):
+              pyxel.quit()
       else:
-          self.Game_update()
+          if self.key_ipt == True:
+              #Key input------------------------------------------------------
+              if self.key_ipt_num == (4, 1):                  
+                  if pyxel.btnp(pyxel.KEY_Y):
+                      self.game_msg.update("Yes", 3)
+                      self.game_msg.update("Somewhere a door opened.", 9)
+                      if self.pos_angle == 1:
+                          self.maze[self.pos[1] - 1][self.pos[0]] = (5, 1)
+                      elif self.pos_angle == 2:
+                          self.maze[self.pos[1]][self.pos[0] + 1] = (5, 1)
+                      elif self.pos_angle == 3:
+                          self.maze[self.pos[1] + 1][self.pos[0]] = (5, 1)
+                      elif self.pos_angle == 4:
+                          self.maze[self.pos[1]][self.pos[0] - 1] = (5, 1) 
+                      self.dead_end[1] = (5, 1)
+                      self.key_ipt = False
+                      self.key_ipt_num = (0, 0)
+                      self.maze[5][5] = (0, 0) 
+                  elif pyxel.btnp(pyxel.KEY_N):
+                      self.game_msg.update("No", 3)
+                      self.key_ipt = False
+                      self.key_ipt_num = (0, 0)
+              #---------------------------------------------------------------
+          else:
+              self.Game_update()
           
   def Game_update(self):                           
       #Wall reset
@@ -206,61 +154,41 @@ class APP:
       if pyxel.btnp(pyxel.KEY_UP):          
           self.dead_end[0] = 0
           if self.pos_angle == 1:
-              if self.maze[self.pos[1] - 1][self.pos[0]] in self.move_permit:
+              tile = self.maze[self.pos[1] - 1][self.pos[0]]
+              if tile in self.move_permit:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[1] = self.pos[1] - 1
                   self.pos_angle = 1
-              #Tile Check(Start position)
-              elif self.maze[self.pos[1] - 1][self.pos[0]] == (1, 1):
-                  self.game_msg.update("Start position", 3)
-                  self.game_msg.update("Find the gold!", 10)                  
-              #Tile Check(Goal position)
-              elif self.maze[self.pos[1] - 1][self.pos[0]] == (2, 1):
-                  self.game_msg.update("Goal position", 3)
-                  self.game_msg.update("You finally found the gold!", 100)               
+              else:
+                  self.chk_other_tile(tile)
           elif self.pos_angle == 2:
-              if self.maze[self.pos[1]][self.pos[0] + 1] in self.move_permit:
+              tile = self.maze[self.pos[1]][self.pos[0] + 1]
+              if tile in self.move_permit:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[0] = self.pos[0] + 1
                   self.pos_angle = 2
-              #Tile Check(Start position)
-              elif self.maze[self.pos[1]][self.pos[0] + 1] == (1, 1):
-                  self.game_msg.update("Start position", 3)
-                  self.game_msg.update("Find the gold!", 10)                                    
-              #Tile Check(Goal position)
-              elif self.maze[self.pos[1]][self.pos[0] + 1] == (2, 1):
-                 self.game_msg.update("Goal position", 3)
-                 self.game_msg.update("You finally found the gold!", 100)                               
+              else:
+                  self.chk_other_tile(tile)
           elif self.pos_angle == 3:
-              if self.maze[self.pos[1] + 1][self.pos[0]] in self.move_permit:
+              tile = self.maze[self.pos[1] + 1][self.pos[0]]
+              if tile in self.move_permit:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[1] = self.pos[1] + 1
                   self.pos_angle = 3
-              #Tile Check(Start position)
-              elif self.maze[self.pos[1] + 1][self.pos[0]] == (1, 1):
-                  self.game_msg.update("Start position", 3)
-                  self.game_msg.update("Find the gold!", 10)                                    
-              #Tile Check(Goal position)
-              elif self.maze[self.pos[1] + 1][self.pos[0]] == (2, 1):
-                  self.game_msg.update("Goal position", 3)
-                  self.game_msg.update("You finally found the gold!", 100)   
+              else:
+                  self.chk_other_tile(tile)
           elif self.pos_angle == 4:
-              if self.maze[self.pos[1]][self.pos[0] - 1] in self.move_permit:
+              tile = self.maze[self.pos[1]][self.pos[0] - 1] 
+              if tile in self.move_permit:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[0] = self.pos[0] - 1     
                   self.pos_angle = 4
-              #Tile Check(Start position)
-              elif self.maze[self.pos[1]][self.pos[0] - 1] == (1, 1):
-                  self.game_msg.update("Start position", 3)
-                  self.game_msg.update("Find the gold!", 10)                                    
-              #Tile Check(Goal position)
-              elif self.maze[self.pos[1]][self.pos[0] - 1] == (2, 1):
-                  self.game_msg.update("Goal position", 3)
-                  self.game_msg.update("You finally found the gold!", 100)   
+              else:
+                  self.chk_other_tile(tile)
 
           #Enemy action
           self.e_msg_c = 0          
@@ -320,8 +248,49 @@ class APP:
               self.pos_angle = 2
           elif self.pos_angle == 4:
               self.pos_angle = 3    
-      #-----------------------------------------------------------------------
-  
+      #-----------------------------------------------------------------------  
+      
+      #Wall-Floor set & Enemy-serch-------------------------------------------
+      self.wall_update()
+      
+      #Other action-----------------------------------------------------------
+      self.other_action()
+      
+      
+  def other_action(self):
+      #Paint floor action-----------------------------------------------------
+      if pyxel.btnp(pyxel.KEY_SPACE):
+          if self.paint_cnt > 0:
+              if self.maze[self.pos[1]][self.pos[0]] == (0, 1):
+                  pass
+              else:
+                  self.maze[self.pos[1]][self.pos[0]] = (0, 1)                        
+                  self.paint_cnt -= 1
+      #-----------------------------------------------------------------------      
+      
+      
+  def chk_other_tile(self, t):
+      #Tile Check(Start position)
+      if t == (1, 1):
+          self.game_msg.update("Start position", 3)
+          self.game_msg.update("Find the gold!", 10)                                    
+      #Tile Check(Goal position)
+      elif t == (2, 1):
+          self.game_msg.update("Goal position", 3)
+          self.game_msg.update("You finally found the gold!", 100)             
+      #Tile Check(Door)
+      elif t == (3, 1):
+          self.game_msg.update("Door is locked.", 3)
+      #Tile Check(Lever)
+      elif t == (4, 1):
+          self.game_msg.update("You have found the lever.", 3)
+          self.game_msg.update("Do you want to activate", 11)
+          self.game_msg.update("the lever?", 11)   
+          self.game_msg.update("Y = Yes,  N = No", 11)   
+          self.key_ipt = True
+          self.key_ipt_num = (4, 1)
+          
+  def wall_update(self):
       #Wall-Floor set & Enemy-serch-------------------------------------------      
       if self.pos_angle == 1:
           for i1 in range(4):
@@ -441,35 +410,48 @@ class APP:
                           self.enemy_pos = 0          
                           self.bubble_cnt = 0
                           self.game_over = True                                                             
-      #-----------------------------------------------------------------------
-      
-      #Paint floor action-----------------------------------------------------
-      if pyxel.btnp(pyxel.KEY_SPACE):
-          if self.paint_cnt > 0:
-              if self.maze[self.pos[1]][self.pos[0]] == (0, 1):
-                  pass
-              else:
-                  self.maze[self.pos[1]][self.pos[0]] = (0, 1)                        
-                  self.paint_cnt -= 1
-      #-----------------------------------------------------------------------
-      
-          
+      #-----------------------------------------------------------------------      
+
+  def bubble_update(self):
+      #New bubble create------------------------------------------------------
+      if self.bubble_cnt == 0:
+          self.bubble_cnt = pyxel.rndi(200, 400)
+          b_num = pyxel.rndi(2, 10)
+          for bn in range(b_num):
+              c = choice(self.bub_c)
+              x = pyxel.rndi(30, 220)
+              y = pyxel.rndi(160, 220)
+              v = pyxel.rndi(0, 2)
+              s1 = pyxel.rndi(1, 2)
+              s2 = pyxel.rndi(1, 9) / 10
+              s = s1 + s2
+              new_bubble = bC.Bubble(x, y, v, c, s)
+              self.bubbles.append(new_bubble)
+              
+      #Bubble update----------------------------------------------------------      
+      b_mi = pyxel.rndi(1, 10)
+      self.bubble_cnt -= b_mi
+      for b in self.bubbles:
+          b.update()
+          if b.bub_y < 0:
+              del b              
+      #----------------------------------------------------------------------            
 
   def draw(self):
       pyxel.cls(0)                        
       
-      d.draw_wall(self.wall)
+      d.draw_wall(self.wall, self.wall_list_n)
       
       d.draw_paint(self.floor)
 
-      d.draw_dead_end(self.dead_end)
+      d.draw_dead_end(self.dead_end, self.wall_list_n)
 
       d.draw_bubble(self.bubbles, 0)
           
       #Draw Game Over text----------------------------------------------------
       if self.game_over == True:
           d.draw_game_over()
-      #-----------------------------------------------------------------------                    
+      #-----------------------------------------------------------------------
           
       d.draw_enemy(self.enemy_pos, self.dead_end)
 

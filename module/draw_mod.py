@@ -1,274 +1,320 @@
 # -*- coding: utf-8 -*-
 import pyxel
 
-def draw_wall(w):
+def draw_wall(w, wl):
 #Draw wall 1------------------------------------------------------------------      
-      if w[0][0] == (1, 0):
+      if w[0][0] in wl:
           pyxel.line(0, 0, 50, 29, 6)
           pyxel.line(0, 0, 0, 150, 6)
           pyxel.line(0, 150, 50, 121, 6)
           pyxel.line(50, 29, 50, 121, 6)
+          
       elif w[0][0] == (1, 1):
           pyxel.line(0, 0, 50, 29, 9)
           pyxel.line(0, 0, 0, 150, 9)
           pyxel.line(0, 150, 50, 121, 9)
           pyxel.line(50, 29, 50, 121, 9)          
+          
       elif w[0][0] == (2, 1):
           pyxel.line(0, 0, 50, 29, 10)
           pyxel.line(0, 0, 0, 150, 10)
           pyxel.line(0, 150, 50, 121, 10)
           pyxel.line(50, 29, 50, 121, 10)               
+          
       elif w[0][0] == (3, 1):
           pyxel.line(0, 0, 50, 29, 2)
           pyxel.line(0, 0, 0, 150, 2)
           pyxel.line(0, 150, 50, 121, 2)
           pyxel.line(50, 29, 50, 121, 2)                
+          
       elif w[0][0] == (4, 1):
           pyxel.line(0, 0, 50, 29, 7)
           pyxel.line(0, 0, 0, 150, 7)
           pyxel.line(0, 150, 50, 121, 7)
           pyxel.line(50, 29, 50, 121, 7)                 
+          
       elif w[0][0] == (5, 1):
           pyxel.line(0, 0, 50, 29, 7)
           pyxel.line(0, 0, 0, 150, 7)
           pyxel.line(0, 150, 50, 121, 7)
           pyxel.line(50, 29, 50, 121, 7)                           
+          
       else:
           pyxel.line(0, 29, 50, 29, 6)
           pyxel.line(0, 121, 50, 121, 6)
           
-      if w[0][1] == (1, 0):       
+      if w[0][1] in wl:    
           pyxel.line(256, 0, 205, 29, 6)
           pyxel.line(256, 150, 205, 121, 6)      
           pyxel.line(255, 0, 255, 150, 6)
           pyxel.line(205, 29, 205, 121, 6)
+          
       elif w[0][1] == (1, 1):       
           pyxel.line(256, 0, 205, 29, 9)
           pyxel.line(256, 150, 205, 121, 9)      
           pyxel.line(255, 0, 255, 150, 9)
           pyxel.line(205, 29, 205, 121, 9)
+          
       elif w[0][1] == (2, 1):       
           pyxel.line(256, 0, 205, 29, 10)
           pyxel.line(256, 150, 205, 121, 10)      
           pyxel.line(255, 0, 255, 150, 10)
-          pyxel.line(205, 29, 205, 121, 10)         
+          pyxel.line(205, 29, 205, 121, 10)    
+          
       elif w[0][1] == (3, 1):       
           pyxel.line(256, 0, 205, 29, 2)
           pyxel.line(256, 150, 205, 121, 2)      
           pyxel.line(255, 0, 255, 150, 2)
-          pyxel.line(205, 29, 205, 121, 2)             
+          pyxel.line(205, 29, 205, 121, 2)     
+          
       elif w[0][1] == (4, 1):       
           pyxel.line(256, 0, 205, 29, 7)
           pyxel.line(256, 150, 205, 121, 7)      
           pyxel.line(255, 0, 255, 150, 7)
-          pyxel.line(205, 29, 205, 121, 7)             
+          pyxel.line(205, 29, 205, 121, 7)    
+          
       elif w[0][1] == (5, 1):       
           pyxel.line(256, 0, 205, 29, 7)
           pyxel.line(256, 150, 205, 121, 7)      
           pyxel.line(255, 0, 255, 150, 7)
-          pyxel.line(205, 29, 205, 121, 7)                       
+          pyxel.line(205, 29, 205, 121, 7)   
+                    
       else:
           pyxel.line(256, 29, 205, 29, 6)
           pyxel.line(256, 121, 205, 121, 6)
 #-----------------------------------------------------------------------------          
 
 #Draw wall 2------------------------------------------------------------------                    
-      if w[1][0] == (1, 0):       
+      if w[1][0] in wl:    
           pyxel.line(50, 29, 80, 45, 12)
           pyxel.line(50, 121, 80, 105, 12)
           pyxel.line(50, 29, 50, 121, 12)
           pyxel.line(80, 45, 80, 105, 12)
+          
       elif w[1][0] == (1, 1):       
           pyxel.line(50, 29, 80, 45, 9)
           pyxel.line(50, 121, 80, 105, 9)
           pyxel.line(50, 29, 50, 121, 9)
           pyxel.line(80, 45, 80, 105, 9)
+          
       elif w[1][0] == (2, 1):       
           pyxel.line(50, 29, 80, 45, 10)
           pyxel.line(50, 121, 80, 105, 10)
           pyxel.line(50, 29, 50, 121, 10)
-          pyxel.line(80, 45, 80, 105, 10)          
+          pyxel.line(80, 45, 80, 105, 10)   
+          
       elif w[1][0] == (3, 1):       
           pyxel.line(50, 29, 80, 45, 2)
           pyxel.line(50, 121, 80, 105, 2)
           pyxel.line(50, 29, 50, 121, 2)
-          pyxel.line(80, 45, 80, 105, 2)                    
+          pyxel.line(80, 45, 80, 105, 2)    
+                
       elif w[1][0] == (4, 1):       
           pyxel.line(50, 29, 80, 45, 7)
           pyxel.line(50, 121, 80, 105, 7)
           pyxel.line(50, 29, 50, 121, 7)
-          pyxel.line(80, 45, 80, 105, 7)                    
+          pyxel.line(80, 45, 80, 105, 7)    
+                
       elif w[1][0] == (5, 1):       
           pyxel.line(50, 29, 80, 45, 7)
           pyxel.line(50, 121, 80, 105, 7)
           pyxel.line(50, 29, 50, 121, 7)
-          pyxel.line(80, 45, 80, 105, 7)                              
+          pyxel.line(80, 45, 80, 105, 7)     
+                         
       else:          
           pyxel.line(79, 45, 51, 45, 12)
           pyxel.line(79, 105, 51, 105, 12)
           
-      if w[1][1] == (1, 0):       
+      if w[1][1] in wl:   
          pyxel.line(205, 29, 175, 45, 12)
          pyxel.line(205, 121, 175, 105, 12)
          pyxel.line(205, 29, 205, 121, 12)
          pyxel.line(175, 45, 175, 105, 12)
+         
       elif w[1][1] == (1, 1):       
          pyxel.line(205, 29, 175, 45, 9)
          pyxel.line(205, 121, 175, 105, 9)
          pyxel.line(205, 29, 205, 121, 9)
          pyxel.line(175, 45, 175, 105, 9)
+         
       elif w[1][1] == (2, 1):       
          pyxel.line(205, 29, 175, 45, 10)
          pyxel.line(205, 121, 175, 105, 10)
          pyxel.line(205, 29, 205, 121, 10)
-         pyxel.line(175, 45, 175, 105, 10)         
+         pyxel.line(175, 45, 175, 105, 10)  
+         
       elif w[1][1] == (3, 1):       
          pyxel.line(205, 29, 175, 45, 2)
          pyxel.line(205, 121, 175, 105, 2)
          pyxel.line(205, 29, 205, 121, 2)
-         pyxel.line(175, 45, 175, 105, 2)                  
+         pyxel.line(175, 45, 175, 105, 2)   
+               
       elif w[1][1] == (4, 1):       
          pyxel.line(205, 29, 175, 45, 7)
          pyxel.line(205, 121, 175, 105, 7)
          pyxel.line(205, 29, 205, 121, 7)
-         pyxel.line(175, 45, 175, 105, 7)                  
+         pyxel.line(175, 45, 175, 105, 7)   
+               
       elif w[1][1] == (5, 1):       
          pyxel.line(205, 29, 175, 45, 7)
          pyxel.line(205, 121, 175, 105, 7)
          pyxel.line(205, 29, 205, 121, 7)
-         pyxel.line(175, 45, 175, 105, 7)                           
+         pyxel.line(175, 45, 175, 105, 7)   
+                        
       else:          
           pyxel.line(176, 45, 204, 45, 12)
           pyxel.line(176, 105, 204, 105, 12)      
 #----------------------------------------------------------------------------          
       
 #Draw wall 3-----------------------------------------------------------------                  
-      if w[2][0] == (1, 0):       
+      if w[2][0] in wl:
           pyxel.line(80, 45, 97, 55, 5)
           pyxel.line(80, 105, 97, 95, 5)
           pyxel.line(80, 45, 80, 105, 5)
           pyxel.line(97, 55, 97, 95, 5)
+          
       elif w[2][0] == (1, 1):       
           pyxel.line(80, 45, 97, 55, 9)
           pyxel.line(80, 105, 97, 95, 9)
           pyxel.line(80, 45, 80, 105, 9)
           pyxel.line(97, 55, 97, 95, 9)
+          
       elif w[2][0] == (2, 1):       
           pyxel.line(80, 45, 97, 55, 10)
           pyxel.line(80, 105, 97, 95, 10)
           pyxel.line(80, 45, 80, 105, 10)
-          pyxel.line(97, 55, 97, 95, 10)          
+          pyxel.line(97, 55, 97, 95, 10)  
+          
       elif w[2][0] == (3, 1):       
           pyxel.line(80, 45, 97, 55, 2)
           pyxel.line(80, 105, 97, 95, 2)
           pyxel.line(80, 45, 80, 105, 2)
-          pyxel.line(97, 55, 97, 95, 2)                    
+          pyxel.line(97, 55, 97, 95, 2)   
+                 
       elif w[2][0] == (4, 1):       
           pyxel.line(80, 45, 97, 55, 7)
           pyxel.line(80, 105, 97, 95, 7)
           pyxel.line(80, 45, 80, 105, 7)
-          pyxel.line(97, 55, 97, 95, 7)                    
+          pyxel.line(97, 55, 97, 95, 7)  
+                  
       elif w[2][0] == (5, 1):       
           pyxel.line(80, 45, 97, 55, 7)
           pyxel.line(80, 105, 97, 95, 7)
           pyxel.line(80, 45, 80, 105, 7)
-          pyxel.line(97, 55, 97, 95, 7)                              
+          pyxel.line(97, 55, 97, 95, 7)   
+                           
       else:
           pyxel.line(97, 55, 81, 55, 5)
           pyxel.line(97, 95, 81, 95, 5)
           
-      if w[2][1] == (1, 0):       
+      if w[2][1] in wl:  
           pyxel.line(175, 45, 158, 55, 5)
           pyxel.line(175, 105, 158, 95, 5)
           pyxel.line(175, 45, 175, 105, 5)
           pyxel.line(158, 55, 158, 95, 5)
+          
       elif w[2][1] == (1, 1):       
           pyxel.line(175, 45, 158, 55, 9)
           pyxel.line(175, 105, 158, 95, 9)
           pyxel.line(175, 45, 175, 105, 9)
           pyxel.line(158, 55, 158, 95, 9)
+          
       elif w[2][1] == (2, 1):       
           pyxel.line(175, 45, 158, 55, 10)
           pyxel.line(175, 105, 158, 95, 10)
           pyxel.line(175, 45, 175, 105, 10)
-          pyxel.line(158, 55, 158, 95, 10)          
+          pyxel.line(158, 55, 158, 95, 10)   
+          
       elif w[2][1] == (3, 1):       
           pyxel.line(175, 45, 158, 55, 2)
           pyxel.line(175, 105, 158, 95, 2)
           pyxel.line(175, 45, 175, 105, 2)
-          pyxel.line(158, 55, 158, 95, 2)                    
+          pyxel.line(158, 55, 158, 95, 2)    
+                
       elif w[2][1] == (4, 1):       
           pyxel.line(175, 45, 158, 55, 7)
           pyxel.line(175, 105, 158, 95, 7)
           pyxel.line(175, 45, 175, 105, 7)
-          pyxel.line(158, 55, 158, 95, 7)                    
+          pyxel.line(158, 55, 158, 95, 7)   
+                 
       elif w[2][1] == (5, 1):       
           pyxel.line(175, 45, 158, 55, 7)
           pyxel.line(175, 105, 158, 95, 7)
           pyxel.line(175, 45, 175, 105, 7)
-          pyxel.line(158, 55, 158, 95, 7)                              
+          pyxel.line(158, 55, 158, 95, 7)   
+                           
       else:
           pyxel.line(158, 55, 174, 55, 5)
           pyxel.line(158, 95, 174, 95, 5)
 #----------------------------------------------------------------------------
 
 #Draw wall 4-----------------------------------------------------------------                  
-      if w[3][0] == (1, 0):       
+      if w[3][0] in wl:   
           pyxel.line(97, 55, 108, 60, 1)
           pyxel.line(97, 95, 108, 90, 1)
           pyxel.line(97, 55, 97, 95, 1)
-          pyxel.line(108, 60, 108, 90, 1)    
+          pyxel.line(108, 60, 108, 90, 1)  
+          
       elif w[3][0] == (1, 1):       
           pyxel.line(97, 55, 108, 60, 9)
           pyxel.line(97, 95, 108, 90, 9)
           pyxel.line(97, 55, 97, 95, 9)
-          pyxel.line(108, 60, 108, 90, 9)              
+          pyxel.line(108, 60, 108, 90, 9) 
+             
       elif w[3][0] == (2, 1):       
           pyxel.line(97, 55, 108, 60, 10)
           pyxel.line(97, 95, 108, 90, 10)
           pyxel.line(97, 55, 97, 95, 10)
-          pyxel.line(108, 60, 108, 90, 10)    
+          pyxel.line(108, 60, 108, 90, 10) 
+          
       elif w[3][0] == (3, 1):       
           pyxel.line(97, 55, 108, 60, 2)
           pyxel.line(97, 95, 108, 90, 2)
           pyxel.line(97, 55, 97, 95, 2)
-          pyxel.line(108, 60, 108, 90, 2)           
+          pyxel.line(108, 60, 108, 90, 2) 
+          
       elif w[3][0] == (4, 1):       
           pyxel.line(97, 55, 108, 60, 7)
           pyxel.line(97, 95, 108, 90, 7)
           pyxel.line(97, 55, 97, 95, 7)
-          pyxel.line(108, 60, 108, 90, 7)                     
+          pyxel.line(108, 60, 108, 90, 7) 
+                    
       elif w[3][0] == (5, 1):       
           pyxel.line(97, 55, 108, 60, 7)
           pyxel.line(97, 95, 108, 90, 7)
           pyxel.line(97, 55, 97, 95, 7)
           pyxel.line(108, 60, 108, 90, 7)                     
           
-      if w[3][1] == (1, 0):       
+      if w[3][1] in wl:  
          pyxel.line(158, 55, 148, 60, 1)
          pyxel.line(158, 95, 148, 90, 1)  
          pyxel.line(158, 55, 158, 95, 1)
-         pyxel.line(148, 60, 148, 90, 1)      
+         pyxel.line(148, 60, 148, 90, 1)  
+         
       elif w[3][1] == (1, 1):       
          pyxel.line(158, 55, 148, 60, 9)
          pyxel.line(158, 95, 148, 90, 9)  
          pyxel.line(158, 55, 158, 95, 9)
-         pyxel.line(148, 60, 148, 90, 9)      
+         pyxel.line(148, 60, 148, 90, 9)  
+         
       elif w[3][1] == (2, 1):       
          pyxel.line(158, 55, 148, 60, 10)
          pyxel.line(158, 95, 148, 90, 10)
          pyxel.line(158, 55, 158, 95, 10)
-         pyxel.line(148, 60, 148, 90, 10)    
+         pyxel.line(148, 60, 148, 90, 10) 
+         
       elif w[3][1] == (3, 1):       
          pyxel.line(158, 55, 148, 60, 2)
          pyxel.line(158, 95, 148, 90, 2)
          pyxel.line(158, 55, 158, 95, 2)
-         pyxel.line(148, 60, 148, 90, 2)            
+         pyxel.line(148, 60, 148, 90, 2)  
+         
       elif w[3][1] == (4, 1):       
          pyxel.line(158, 55, 148, 60, 7)
          pyxel.line(158, 95, 148, 90, 7)
          pyxel.line(158, 55, 158, 95, 7)
-         pyxel.line(148, 60, 148, 90, 7)            
+         pyxel.line(148, 60, 148, 90, 7)  
+          
       elif w[3][1] == (5, 1):       
          pyxel.line(158, 55, 148, 60, 7)
          pyxel.line(158, 95, 148, 90, 7)
@@ -292,18 +338,20 @@ def draw_paint (p):
           pyxel.line(115, 95, 135, 92, 1)          
 #-----------------------------------------------------------------------------   
 
-def draw_dead_end(d):
+def draw_dead_end(d, wl):
 #Draw Dead-End----------------------------------------------------------------
       
       if d[0] == 0:
           pass
       elif d[0] == 1:
-          if d[1] == (1, 0):
+          if d[1] in wl:
               pyxel.rect(50, 29, 156, 93, 0)
               pyxel.rectb(50, 29, 156, 93, 6)
           elif d[1] == (1, 1):
               pyxel.rect(50, 29, 156, 93, 0)
-              pyxel.rectb(50, 29, 156, 93, 9)              
+              pyxel.rectb(50, 29, 36, 93, 9)              
+              pyxel.rectb(150, 29, 70, 93, 9)
+              
           elif d[1] == (2, 1):             
               pyxel.rect(50, 29, 156, 93, 0)
               pyxel.rectb(50, 29, 156, 93, 10)        
@@ -356,8 +404,10 @@ def draw_dead_end(d):
               pyxel.line(205, 31, 205, 121, 9)
               
           elif d[1] == (3, 1):             
+              cc = 2
+              
               pyxel.rect(50, 29, 156, 93, 0)
-              pyxel.rectb(50, 29, 156, 93, 2)                    
+              pyxel.rectb(50, 29, 156, 93, cc)   
               
               pyxel.circb(128, 60, 25, 7)
               pyxel.circb(128, 93, 25, 7)
@@ -377,9 +427,10 @@ def draw_dead_end(d):
               
               pyxel.circb(145, 78, 6, 7)
               pyxel.line(139, 78, 150, 78, 7)
-              pyxel.line(145, 73, 145, 84, 7)
+              pyxel.line(145, 73, 145, 84, 7)              
               
-          elif d[1] == (4, 1):             
+          elif d[1] == (4, 1):           
+              cc = 2
               pyxel.rect(50, 29, 156, 93, 0)
               pyxel.rectb(50, 29, 156, 93, 7)                                                        
               
@@ -407,22 +458,57 @@ def draw_dead_end(d):
               
               pyxel.rectb(103, 50, 51, 54, 13)      
               
+              pyxel.fill(110, 76, cc)
+              pyxel.fill(146, 76, cc)
+              
 
-          elif d[1] == (5, 1):             
+          elif d[1] == (5, 1):      
+              cc = 2
               pyxel.rect(50, 29, 156, 93, 0)
-              pyxel.rectb(50, 29, 156, 93, 7)      
+              pyxel.rectb(50, 29, 156, 93, 7)                                                        
+              
+              pyxel.rect(122, 68, 15, 25, 3)                          
+              pyxel.rectb(122, 68, 15, 25, 7)                          
+              
+              pyxel.rect(125, 70, 9, 20, 0)                          
+              pyxel.rectb(125, 70, 9, 20, 1)                          
+              
+              pyxel.rect(127, 83, 5, 15, 0)
+              pyxel.rectb(127, 83, 5, 15, 7)
+              
+              pyxel.rect(122, 95, 15, 5, 8)
+              pyxel.rectb(122, 95, 15, 5, 7)                            
+              
+              pyxel.rect(103, 50, 5, 54, 10)
+              pyxel.rectb(103, 50, 5, 54, 13)                            
+              pyxel.rect(113, 50, 5, 54, 10)
+              pyxel.rectb(113, 50, 5, 54, 13)                            
+
+              pyxel.rect(149, 50, 5, 54, 10)
+              pyxel.rectb(149, 50, 5, 54, 13)                                          
+              pyxel.rect(140, 50, 5, 54, 10)
+              pyxel.rectb(140, 50, 5, 54, 13)                                                        
+              
+              pyxel.rectb(103, 50, 51, 54, 13)      
+              
+              pyxel.fill(110, 76, cc)
+              pyxel.fill(146, 76, cc)
               
       elif d[0] == 2:
-          if d[1] == (1, 0):
+          if d[1] in wl:
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 12)
+              
           elif d[1] == (1, 1):
               pyxel.rect(80, 45, 96, 61, 0)
-              pyxel.rectb(80, 45, 96, 61, 9)              
+              pyxel.rectb(80, 45, 20, 61, 9)              
+              pyxel.rectb(150, 45, 25, 61, 9)              
+              
           elif d[1] == (2, 1):
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 10)          
               pyxel.rectb(106, 54, 44, 42, 9)
+              
           elif d[1] == (3, 1):
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 2)          
@@ -444,15 +530,19 @@ def draw_dead_end(d):
           elif d[1] == (5, 1):
               pyxel.rect(80, 45, 96, 61, 0)
               pyxel.rectb(80, 45, 96, 61, 7)          
-              #pyxel.rectb(106, 54, 44, 42, 9)              
+              
+              pyxel.rectb(114, 60, 30, 30, 13)        
               
       elif d[0] == 3:
-          if d[1] == (1, 0):
+          if d[1] in wl:
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 5)
+              
           elif d[1] == (1, 1):
               pyxel.rect(97, 55, 62, 41, 0)
-              pyxel.rectb(97, 55, 62, 41, 9)              
+              pyxel.rectb(97, 55, 10, 41, 9)          
+              pyxel.rectb(143, 55, 15, 41, 9)          
+              
           elif d[1] == (2, 1):
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 10)           
@@ -471,7 +561,7 @@ def draw_dead_end(d):
           elif d[1] == (5, 1):
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 7)           
-              #pyxel.rectb(115, 62, 28, 25, 9)              
+              pyxel.rectb(120, 67, 17, 17, 13)      
       else:
           pass
 #-----------------------------------------------------------------------------   
