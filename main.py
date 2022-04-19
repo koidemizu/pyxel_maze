@@ -142,8 +142,9 @@ class APP:
       self.e_msg_F = False
       self.key_ipt = False
       self.key_ipt_num = (0, 0)
-      
+      self.game_start = False
       self.game_msg = Game_msg.GameMsg()      
+      self.ver = "0.20"
       
   def update(self): 
       #print(self.d_pos)
@@ -156,6 +157,9 @@ class APP:
               self.status_set()
           elif pyxel.btnp(pyxel.KEY_Q):
               pyxel.quit()
+      elif self.game_start == False:
+          if pyxel.btnp(pyxel.KEY_S):
+              self.game_start = True
       else:
           if self.key_ipt == True:
               #Key input------------------------------------------------------
@@ -589,15 +593,22 @@ class APP:
                           self.game_over = True                                                             
       #-----------------------------------------------------------------------      
 
-  def bubble_update(self):
+  def bubble_update(self):      
       #New bubble create------------------------------------------------------
-      if self.bubble_cnt == 0:
-          self.bubble_cnt = pyxel.rndi(200, 400)
-          b_num = pyxel.rndi(2, 10)
+      if self.bubble_cnt < 0:
+          self.bubble_cnt = pyxel.rndi(1200, 2400)
+          if self.game_start == True:
+              b_num = pyxel.rndi(2, 10)
+          else:
+              b_num = pyxel.rndi(20, 30)             
           for bn in range(b_num):
-              c = choice(self.bub_c)
-              x = pyxel.rndi(30, 220)
-              y = pyxel.rndi(160, 220)
+              c = choice(self.bub_c)              
+              if self.game_start == True:
+                  x = pyxel.rndi(10, 230)
+                  y = pyxel.rndi(160, 230)
+              else:
+                  x = pyxel.rndi(0, 250)
+                  y = pyxel.rndi(256, 286)
               v = pyxel.rndi(0, 2)
               s1 = pyxel.rndi(1, 2)
               s2 = pyxel.rndi(1, 9) / 10
@@ -617,31 +628,64 @@ class APP:
   def draw(self):
       pyxel.cls(0)                        
       
-      d.draw_wall(self.wall, self.wall_list_n,
-                  self.wall_list_d, self.wall_list_l, self.wall_list_l2,
-                  self.wall_list_f)
-      
-      d.draw_paint(self.floor)
-
-      d.draw_dead_end(self.dead_end, self.wall_list_n, 
+      #Game start information
+      if self.game_start == False:
+          pyxel.blt(10, 10, 2, 0, 0, 232, 40, 14)
+          
+          y = 50
+          pyxel.rect(50, 29 + y, 156, 93, 0)
+              
+          pyxel.circb(128, 60 + y, 25, 7)
+          pyxel.circb(128, 93 + y, 25, 7)
+          pyxel.rect(103, 50 + y, 51, 54, 0)
+          pyxel.rectb(103, 50 + y, 51, 54, 7)
+              
+          pyxel.line(106, 50 + y, 150, 50 + y, 0)
+          pyxel.line(106, 103 + y, 150, 103 + y, 0)
+              
+          pyxel.line(107, 50 + y, 107, 103 + y, 7)
+              
+          pyxel.rectb(103, 59 + y, 10, 5, 7)
+          pyxel.rectb(103, 89 + y, 10, 5, 7)
+              
+          #pyxel.circ(128, 58, 10, 7)
+          pyxel.circb(128, 58 + y, 10, 7)
+              
+          pyxel.circb(145, 78 + y, 6, 7)
+          pyxel.line(139, 78 + y, 150, 78 + y, 7)
+          pyxel.line(145, 73 + y, 145, 84 + y, 7)                    
+          
+          d.draw_bubble(self.bubbles, 1)
+          
+          pyxel.text(90, 200, "Press S key to start.", pyxel.frame_count % 16)
+          pyxel.text(205, 55, "Ver." + self.ver, 7)
+          
+      else:
+          d.draw_wall(self.wall, self.wall_list_n,
                       self.wall_list_d, self.wall_list_l, self.wall_list_l2,
                       self.wall_list_f)
+      
+          d.draw_paint(self.floor)
 
-      d.draw_bubble(self.bubbles, 0)
-          
-      #Draw Game Over text----------------------------------------------------
-      if self.game_over == True:
-          d.draw_game_over()
-      #-----------------------------------------------------------------------
-          
-      d.draw_enemy(self.enemy_pos, self.dead_end)
+          d.draw_dead_end(self.dead_end, self.wall_list_n, 
+                          self.wall_list_d, self.wall_list_l, 
+                          self.wall_list_l2, self.wall_list_f)
 
-      d.draw_bubble(self.bubbles, 1)
+          d.draw_bubble(self.bubbles, 0)
+          
+          #Draw Game Over text------------------------------------------------
+          if self.game_over == True:
+              d.draw_game_over()
+          #-------------------------------------------------------------------
+          
+          d.draw_enemy(self.enemy_pos, self.dead_end)
+
+          d.draw_bubble(self.bubbles, 1)
        
-      d.draw_compass(self.pos, self.maze, self.wall_list,
-                     self.pos_angle, self.e_msg, self.e_msg_F,
-                     self.paint_cnt, self.game_msg, self.wall_list_n,
-                     self.scan_flug, self.scan_cnt, self.fence_cnt)
+          d.draw_compass(self.pos, self.maze, self.wall_list,
+                         self.pos_angle, self.e_msg, self.e_msg_F,
+                         self.paint_cnt, self.game_msg, self.wall_list_n,
+                         self.scan_flug, self.scan_cnt, self.fence_cnt)
       
 APP()
 
