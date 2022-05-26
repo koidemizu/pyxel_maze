@@ -10,7 +10,7 @@ class GameMsg:
                  ["",8],
                  ["",9],
                  ["",10],
-                 ["Start position",3],
+                 ["You have entered the maze.",3],
                  ["Find the gold!",10],                 
                  ]    
       

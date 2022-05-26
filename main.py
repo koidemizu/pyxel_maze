@@ -6,7 +6,7 @@ from module import draw_mod as d, Game_msg, Enemy as eC, Bubble as bC
 
 class APP:
   def __init__(self):         
-      pyxel.init(256, 256, title = "pyxel")
+      pyxel.init(256, 256, title = "maze", )
       pyxel.load('assets/assets.pyxres')                               
       
       self.status_set() 
@@ -106,7 +106,8 @@ class APP:
                         (3, 4), (4, 4), (5, 4),
                         (3, 5), (4, 5), (5, 5),
                         (3, 6), (4, 6), (5, 6),
-                        (0, 2)
+                        (0, 2),
+                        (6, 1)
                         ]
       
       self.wall_list_n = [(1, 0), (3, 0), (4, 0), (5, 0), (6, 0),]
@@ -114,6 +115,7 @@ class APP:
       self.wall_list_l = [(4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6),]
       self.wall_list_l2 = [(5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6),]
       self.wall_list_f = [(0, 2),]
+      self.wall_list_m = [(6, 1),]
                         
       
       #Floor
@@ -127,12 +129,16 @@ class APP:
       
       #Enemy
       self.enemys = []
-      self.enemys_num = 8
-      self.enemy_set = sample(self.aisle, self.enemys_num)
+      self.enemys_num1 = 10            
+      self.enemy_set1 = sample(self.aisle, self.enemys_num1)      
       
-      for e in self.enemy_set:
-          self.enemys.append(eC.Enemy(e[0], e[1], self.maze, self.move_permit))      
+      for e in self.enemy_set1:
+          self.enemys.append(eC.Enemy(e[0], e[1], self.maze, 
+                                      self.move_permit, pyxel.rndi(1, 2)))
+          
+             
       self.enemy_pos = 9
+      self.enemy_col = 1
       pyxel.mouse(False)
       
       #System
@@ -143,14 +149,19 @@ class APP:
       self.key_ipt = False
       self.key_ipt_num = (0, 0)
       self.game_start = False
+      self.start_bubble = True
+      self.screen = 250
       self.game_msg = Game_msg.GameMsg()      
       self.ver = "0.20"
       
   def update(self): 
       #print(self.d_pos)
+      #pyxel.mouse(True)
       #print(pyxel.mouse_x, pyxel.mouse_y)        
           
-      self.bubble_update()
+      self.bubble_update()      
+      #if pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
+       #   print(self.enemys)
 
       if self.game_over == True:
           if pyxel.btnp(pyxel.KEY_R):
@@ -160,7 +171,12 @@ class APP:
       elif self.game_start == False:
           if pyxel.btnp(pyxel.KEY_S):
               self.game_start = True
+              self.bubble_cnt = -1
       else:
+          if self.screen > 0:
+              self.screen -= 4
+              print(self.screen)
+              
           if self.key_ipt == True:
               #Key input------------------------------------------------------
               #Lever------------------------------------------------------
@@ -235,6 +251,7 @@ class APP:
       
       #Enemy reset
       self.enemy_pos = 9      
+      self.enemy_col = 1
               
       #Player Controll--------------------------------------------------------
       self.move_flag = False
@@ -287,6 +304,7 @@ class APP:
           for e in self.enemys:
               if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
                   self.enemy_pos = 0                  
+                  self.enemy_col = e.coller
                   self.game_over = True
                   
               if self.enemy_pos > 0:
@@ -298,12 +316,7 @@ class APP:
                       self.e_msg_c += 1
                   if x < 3 and y < 3:
                       self.e_msg_F = True            
-                  self.e_msg = "Enemies nearby: " + str(self.e_msg_c)
-                  
-              if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
-                  self.enemy_pos = 0     
-                  self.bubble_cnt = 0
-                  self.game_over = True
+                  self.e_msg = "Enemies nearby: " + str(self.e_msg_c) 
                       
       #Turn to the back
       if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S):
@@ -366,7 +379,7 @@ class APP:
                   self.game_msg.update("Scanning start.", 9)
                   self.scan_flug = True
                   self.scan_cnt -= 1
-                  self.scan_cnt_f = 10
+                  self.scan_cnt_f = 30
                   
       #Fence action-----------------------------------------------------                  
       if pyxel.btnp(pyxel.KEY_I):
@@ -446,12 +459,13 @@ class APP:
   def chk_other_tile(self, t):
       #Tile Check(Start position)
       if t == (1, 1):
-          self.game_msg.update("Start position", 3)
+          self.game_msg.update("You have entered the maze.", 3)
           self.game_msg.update("Find the gold!", 10)                                    
       #Tile Check(Goal position)
       elif t == (2, 1):
           self.game_msg.update("Goal position", 3)
-          self.game_msg.update("You finally found the gold!", 100)             
+          self.game_msg.update("You finally found the gold!", 10)             
+          self.game_msg.update("Congratulations!", 10)  
       #Tile Check(Door)
       elif t in self.wall_list_d:
           self.game_msg.update("Door is locked.", 3)
@@ -470,6 +484,9 @@ class APP:
           self.game_msg.update("Y = Yes,  N = No", 11)   
           self.key_ipt = True
           self.key_ipt_num = t          
+      #Tile Check(monitor)
+      elif t in self.wall_list_m:          
+          self.game_msg.update("You found an old monitor.", 11)
           
   def wall_update(self):
       #Wall-Floor set & Enemy-serch-------------------------------------------      
@@ -497,9 +514,11 @@ class APP:
                       if p1 == e.ene_y and self.pos[0]  == e.ene_x:
                           self.enemy_pos = i1        
                           if self.enemy_pos > i1:                            
-                              self.enemy_pos = i1       
+                              self.enemy_pos = i1      
+                              self.enemy_col = e.coller
                       if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
-                          self.enemy_pos = 0                  
+                          self.enemy_pos = 0   
+                          self.enemy_col = e.coller
                           self.bubble_cnt = 0
                           self.game_over = True                               
                          
@@ -528,8 +547,10 @@ class APP:
                       if p1 == e.ene_y and self.pos[0]  == e.ene_x:
                           if self.enemy_pos > i1:                                         
                               self.enemy_pos = i1         
+                              self.enemy_col = e.coller
                       if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
-                          self.enemy_pos = 0        
+                          self.enemy_pos = 0     
+                          self.enemy_col = e.coller
                           self.bubble_cnt = 0
                           self.game_over = True                                                             
                       
@@ -557,9 +578,11 @@ class APP:
                   for e in self.enemys:
                       if p2 == e.ene_x and self.pos[1]  == e.ene_y:
                           if self.enemy_pos > i1:                            
-                              self.enemy_pos = i1              
+                              self.enemy_pos = i1   
+                              self.enemy_col = e.coller
                       if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
-                          self.enemy_pos = 0        
+                          self.enemy_pos = 0       
+                          self.enemy_col = e.coller
                           self.bubble_cnt = 0
                           self.game_over = True                                                             
                               
@@ -586,19 +609,26 @@ class APP:
                   for e in self.enemys:
                       if p2 == e.ene_x and self.pos[1]  == e.ene_y:
                           if self.enemy_pos > i1:                            
-                              self.enemy_pos = i1            
+                              self.enemy_pos = i1     
+                              self.enemy_col = e.coller
                       if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
                           self.enemy_pos = 0          
+                          self.enemy_col = e.coller
                           self.bubble_cnt = 0
                           self.game_over = True                                                             
       #-----------------------------------------------------------------------      
+
 
   def bubble_update(self):      
       #New bubble create------------------------------------------------------
       if self.bubble_cnt < 0:
           self.bubble_cnt = pyxel.rndi(1200, 2400)
           if self.game_start == True:
-              b_num = pyxel.rndi(2, 10)
+              if self.start_bubble == True:
+                  b_num = 10
+                  self.start_bubble = False
+              else:
+                  b_num = pyxel.rndi(2, 10)
           else:
               b_num = pyxel.rndi(20, 30)             
           for bn in range(b_num):
@@ -657,19 +687,24 @@ class APP:
           
           d.draw_bubble(self.bubbles, 1)
           
-          pyxel.text(90, 200, "Press S key to start.", pyxel.frame_count % 16)
+          pyxel.text(92, 202, "Press S key to start.", 1)
+          pyxel.text(91, 201, "Press S key to start.", 5)
+          pyxel.text(90, 200, "Press S key to start.", 7)
+          
           pyxel.text(205, 55, "Ver." + self.ver, 7)
           
-      else:
+      else:          
           d.draw_wall(self.wall, self.wall_list_n,
                       self.wall_list_d, self.wall_list_l, self.wall_list_l2,
-                      self.wall_list_f)
+                      self.wall_list_f, self.wall_list_m)
       
           d.draw_paint(self.floor)
 
           d.draw_dead_end(self.dead_end, self.wall_list_n, 
                           self.wall_list_d, self.wall_list_l, 
-                          self.wall_list_l2, self.wall_list_f)
+                          self.wall_list_l2, self.wall_list_f, 
+                          self.wall_list_m,
+                          self.maze, self.pos)
 
           d.draw_bubble(self.bubbles, 0)
           
@@ -678,7 +713,7 @@ class APP:
               d.draw_game_over()
           #-------------------------------------------------------------------
           
-          d.draw_enemy(self.enemy_pos, self.dead_end)
+          d.draw_enemy(self.enemy_pos, self.dead_end, self.enemy_col)
 
           d.draw_bubble(self.bubbles, 1)
        
@@ -686,6 +721,45 @@ class APP:
                          self.pos_angle, self.e_msg, self.e_msg_F,
                          self.paint_cnt, self.game_msg, self.wall_list_n,
                          self.scan_flug, self.scan_cnt, self.fence_cnt)
+          
+          if self.screen > 0:       
+              #TATE 1DAN
+              #pyxel.rect(1, 1, 254, self.screen, 0)
+              #pyxel.rectb(1, 1, 254, self.screen, 13)
+              #pyxel.rectb(2, 2, 253, self.screen - 2, 1)
+              
+              #PAKU-PAKU
+              #pyxel.rect(1, 1, self.screen / 2, self.screen / 2, 0)
+              #pyxel.rectb(1, 1, self.screen / 2, self.screen / 2, 13)
+              #pyxel.rect(1, 128+(128-self.screen/2),
+              #            self.screen / 2, self.screen / 2, 0)
+              #pyxel.rectb(1, 128+(128-self.screen/2),
+              #            self.screen / 2, self.screen / 2, 13)
+              #pyxel.rect(127+(128-self.screen/2), 1, 
+              #           self.screen / 2, self.screen / 2, 0)
+              #pyxel.rectb(127+(128-self.screen/2), 1, 
+              #            self.screen / 2, self.screen / 2, 13)
+              #pyxel.rect(127+(128-self.screen/2), 128+(128-self.screen/2),
+              #            self.screen / 2, self.screen / 2, 0)
+              #pyxel.rectb(127+(128-self.screen/2), 128+(128-self.screen/2),
+              #            self.screen / 2, self.screen / 2, 13)              
+              
+              #TATE KAN-NON
+              pyxel.rect(1, 1, 254, self.screen / 2, 0)
+              pyxel.rectb(1, 1, 254, self.screen / 2, 13)
+              pyxel.rect(1, 128+(128-self.screen/2), 254, self.screen / 2, 0)
+              pyxel.rectb(1, 128+(128-self.screen/2), 254, self.screen / 2, 13)              
+              
+              #YOKO KAN-NON
+              pyxel.rect(1, 1, self.screen / 2, 254, 0)
+              pyxel.rectb(1, 1, self.screen / 2, 254, 13)
+              pyxel.rect(128+(128-self.screen/2), 1, self.screen / 2, 254, 0)
+              pyxel.rectb(128+(128-self.screen/2), 1,self.screen / 2, 254, 13)                                                                      
+         
+      #Map window dev    
+      if pyxel.btn(pyxel.MOUSE_BUTTON_RIGHT):
+          d.draw_map_window(self.maze, 1, 1, self.pos)
+
       
 APP()
 

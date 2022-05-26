@@ -2,13 +2,14 @@
 import pyxel
 
 class Enemy:
-  def __init__(self, x, y, m, p):
+  def __init__(self, x, y, m, p, c):
       self.ene_x = x
       self.ene_y = y      
       self.ene_m = 1
       self.maze = m
       self.move_permit = p
       self.move_c = 0
+      self.coller = c
       
   def update(self):
       if self.maze[self.ene_y - 1][self.ene_x] in self.move_permit:
@@ -20,7 +21,9 @@ class Enemy:
       if self.maze[self.ene_y][self.ene_x - 1] in self.move_permit:
           self.move_c += 1
           
-      if self.move_c > 2:
+      if self.move_c > 2 and self.coller == 1:
+          self.ene_m = pyxel.rndi(1, 4)
+      elif self.coller == 2:
           self.ene_m = pyxel.rndi(1, 4)
           
       #ene_m = Angle E=Enemy

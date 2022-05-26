@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pyxel
 
-def draw_wall(w, wl, wld, wll, wll2, wlf):       
+def draw_wall(w, wl, wld, wll, wll2, wlf, wlm):       
           
 #Draw wall 1------------------------------------------------------------------      
       if w[0][0] in wl:
@@ -46,7 +46,13 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
           pyxel.line(0, 0, 50, 29, 13)
           pyxel.line(0, 0, 0, 150, 13)
           pyxel.line(0, 150, 50, 121, 13)
-          pyxel.line(50, 29, 50, 121, 13)                           
+          pyxel.line(50, 29, 50, 121, 13)
+          
+      elif w[0][0] in wlm:
+          pyxel.line(0, 0, 50, 29, 2)
+          pyxel.line(0, 0, 0, 150, 2)
+          pyxel.line(0, 150, 50, 121, 2)
+          pyxel.line(50, 29, 50, 121, 2)          
           
       else:
           pyxel.line(0, 29, 50, 29, 6)
@@ -95,6 +101,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
           pyxel.line(256, 150, 205, 121, 13)      
           pyxel.line(255, 0, 255, 150, 13)
           pyxel.line(205, 29, 205, 121, 13)             
+
+      elif w[0][1] in wlm:
+          pyxel.line(256, 0, 205, 29, 2)
+          pyxel.line(256, 150, 205, 121, 2)      
+          pyxel.line(255, 0, 255, 150, 2)
+          pyxel.line(205, 29, 205, 121, 2)  
                     
       else:
           pyxel.line(256, 29, 205, 29, 6)
@@ -145,6 +157,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
           pyxel.line(50, 121, 80, 105, 13)
           pyxel.line(50, 29, 50, 121, 13)
           pyxel.line(80, 45, 80, 105, 13)               
+          
+      elif w[1][0] in wlm:
+          pyxel.line(50, 29, 80, 45, 2)
+          pyxel.line(50, 121, 80, 105, 2)
+          pyxel.line(50, 29, 50, 121, 2)
+          pyxel.line(80, 45, 80, 105, 2)                
                          
       else:          
           pyxel.line(79, 45, 51, 45, 12)
@@ -193,6 +211,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
          pyxel.line(205, 121, 175, 105, 13)
          pyxel.line(205, 29, 205, 121, 13)
          pyxel.line(175, 45, 175, 105, 13)   
+         
+      elif w[1][1] in wlm:
+         pyxel.line(205, 29, 175, 45, 2)
+         pyxel.line(205, 121, 175, 105, 2)
+         pyxel.line(205, 29, 205, 121, 2)
+         pyxel.line(175, 45, 175, 105, 2)           
          
       else:          
           pyxel.line(176, 45, 204, 45, 12)
@@ -243,6 +267,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
           pyxel.line(80, 105, 97, 95, 13)
           pyxel.line(80, 45, 80, 105, 13)
           pyxel.line(97, 55, 97, 95, 13)             
+          
+      elif w[2][0] in wlm:
+          pyxel.line(80, 45, 97, 55, 2)
+          pyxel.line(80, 105, 97, 95, 2)
+          pyxel.line(80, 45, 80, 105, 2)
+          pyxel.line(97, 55, 97, 95, 2)                 
                            
       else:
           pyxel.line(97, 55, 81, 55, 5)
@@ -291,6 +321,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
           pyxel.line(175, 105, 158, 95, 13)
           pyxel.line(175, 45, 175, 105, 13)
           pyxel.line(158, 55, 158, 95, 13)   
+
+      elif w[2][1] in wlm:
+          pyxel.line(175, 45, 158, 55, 2)
+          pyxel.line(175, 105, 158, 95, 2)
+          pyxel.line(175, 45, 175, 105, 2)
+          pyxel.line(158, 55, 158, 95, 2)   
                            
       else:
           pyxel.line(158, 55, 174, 55, 5)
@@ -342,6 +378,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
           pyxel.line(97, 55, 97, 95, 13)
           pyxel.line(108, 60, 108, 90, 13)                       
           
+      elif w[3][0] in wlm:
+          pyxel.line(97, 55, 108, 60, 2)
+          pyxel.line(97, 95, 108, 90, 2)
+          pyxel.line(97, 55, 97, 95, 2)
+          pyxel.line(108, 60, 108, 90, 2)
+          
       if w[3][1] in wl:  
          pyxel.line(158, 55, 148, 60, 1)
          pyxel.line(158, 95, 148, 90, 1)  
@@ -385,6 +427,12 @@ def draw_wall(w, wl, wld, wll, wll2, wlf):
          pyxel.line(158, 95, 148, 90, 13)
          pyxel.line(158, 55, 158, 95, 13)
          pyxel.line(148, 60, 148, 90, 13)                      
+         
+      elif w[3][1] in wlm:
+         pyxel.line(158, 55, 148, 60, 2)
+         pyxel.line(158, 95, 148, 90, 2)
+         pyxel.line(158, 55, 158, 95, 2)
+         pyxel.line(148, 60, 148, 90, 2)                           
 #-----------------------------------------------------------------------------   
 
 def draw_wall_cc(w):
@@ -421,7 +469,7 @@ def draw_paint (p):
           pyxel.line(115, 95, 135, 92, 1)          
 #-----------------------------------------------------------------------------   
 
-def draw_dead_end(d, wl, wld, wll, wll2, wlf):
+def draw_dead_end(d, wl, wld, wll, wll2, wlf, wlm, mz, pos):
 #Draw Dead-End----------------------------------------------------------------
       if d[1][1] == 1:
           cc = 2
@@ -447,7 +495,16 @@ def draw_dead_end(d, wl, wld, wll, wll2, wlf):
               pyxel.rect(50, 29, 156, 93, 0)
               pyxel.rectb(50, 29, 156, 93, 13)              
               for f in range(12):
-                 pyxel.rectb(50 + f * 13, 29, 156 - f *13, 93, 13)              
+                 pyxel.rectb(50 + f * 13, 29, 156 - f *13, 93, 13)          
+                 
+          elif d[1] in wlm:
+              pyxel.rect(50, 29, 156, 93, 0)
+              pyxel.rectb(50, 29, 156, 93, 2)
+              pyxel.rectb(89, 29, 78, 93, 2)
+              pyxel.rectb(50, 102, 156, 20, 2)
+              pyxel.rectb(50, 29, 156, 5, 2)
+              draw_map_window(mz, 95, 35, pos)
+                              
               
           elif d[1] == (1, 1):
               pyxel.rect(50, 29, 156, 93, 0)
@@ -640,6 +697,11 @@ def draw_dead_end(d, wl, wld, wll, wll2, wlf):
               
               pyxel.rectb(114, 60, 30, 30, 13)        
               
+          elif d[1] in wlm:
+              pyxel.rect(80, 45, 96, 61, 0)
+              pyxel.rectb(80, 45, 96, 61, 2)
+              pyxel.rectb(80, 49, 96, 44, 2)
+              
       elif d[0] == 3:
           if d[1] in wl:
               pyxel.rect(97, 55, 62, 41, 0)
@@ -676,12 +738,18 @@ def draw_dead_end(d, wl, wld, wll, wll2, wlf):
               pyxel.rect(97, 55, 62, 41, 0)
               pyxel.rectb(97, 55, 62, 41, 7)           
               pyxel.rectb(120, 67, 17, 17, 13)      
+              
+          elif d[1] in wlm:
+              pyxel.rect(97, 55, 62, 41, 0)
+              pyxel.rectb(97, 55, 62, 41, 2)
+              pyxel.rectb(97, 58, 62, 31, 2)
+              
       else:
           pass
 #-----------------------------------------------------------------------------   
 
 def draw_bubble(b, n):
-#Bubble draw 1--------------------------------------------------------------     
+#Bubble draw 1--------------------------------------------------------------         
       bn = len(b)
       for bi in range(bn) :
           bx = b[bi].bub_x
@@ -711,40 +779,50 @@ def draw_game_over():
       pyxel.text(105, 100, "Q: QUIT", 8)    
 #------------------------------------------------------------------------------      
 
-def draw_enemy(ep, d):
+def draw_enemy(ep, d, c):
 #Draw enemy------------------------------------------------------------------
-       
+      if c == 1:
+          ci1 = 9
+          ci2 = 10
+          ct1 = 1
+          ct2 = 7
+      elif c == 2:  
+          ci1 = 2
+          ci2 = 8
+          ct1 = 1
+          ct2 = 11
+      
       if ((ep == 3 and ep < d[0])
          or (ep == 3 and d[0] == 0)) : 
        #Pos 1------------------------------------------------------------------
           ex = 117
           ey = 75
-          pyxel.circ(ex, ey, 1, 9)
-          pyxel.circ(ex - 1, ey + 1, 1, 9)
-          pyxel.circ(ex + 16, ey, 1, 9)
-          pyxel.circ(ex + 16 + 1, ey + 1, 1, 9)
+          pyxel.circ(ex, ey, 1, ci1)
+          pyxel.circ(ex - 1, ey + 1, 1, ci1)
+          pyxel.circ(ex + 16, ey, 1, ci1)
+          pyxel.circ(ex + 16 + 1, ey + 1, 1, ci1)
           
       elif ((ep == 2 and ep < d[0])
             or (ep == 2 and d[0] == 0)): 
        #Pos 2------------------------------------------------------------------
           ex = 114
           ey = 70
-          pyxel.circ(ex, ey, 2, 9)
-          pyxel.circ(ex - 1, ey + 1, 2, 9)
-          pyxel.circ(ex + 26, ey, 2, 9)
-          pyxel.circ(ex + 26 + 1, ey + 1, 2, 9)      
+          pyxel.circ(ex, ey, 2, ci1)
+          pyxel.circ(ex - 1, ey + 1, 2, ci1)
+          pyxel.circ(ex + 26, ey, 2, ci1)
+          pyxel.circ(ex + 26 + 1, ey + 1, 2, ci1)      
           
       elif ((ep == 1 and ep < d[0])
             or (ep == 1 and d[0] == 0)):
       #Pos 3-------------------------------------------------------------------
           ex = 109
           ey = 65
-          pyxel.circ(ex, ey, 3, 9)
-          pyxel.circ(ex - 1, ey + 1, 3, 9)
-          pyxel.circ(ex + 36, ey, 3, 9)
-          pyxel.circ(ex + 36 + 1, ey + 1, 3, 9)
-          pyxel.circ(ex - 1, ey + 1, 2, 10)
-          pyxel.circ(ex + 36 + 1, ey + 1, 2, 10)
+          pyxel.circ(ex, ey, 3, ci1)
+          pyxel.circ(ex - 1, ey + 1, 3, ci1)
+          pyxel.circ(ex + 36, ey, 3, ci1)
+          pyxel.circ(ex + 36 + 1, ey + 1, 3, ci1)
+          pyxel.circ(ex - 1, ey + 1, 2, ci2)
+          pyxel.circ(ex + 36 + 1, ey + 1, 2, ci2)
       
       #teeth 1----------------------------------------------------------------
           x = 105
@@ -756,8 +834,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 4.3
               vy =  i * 5
-              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 1)      
-              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 7)    
+              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct1)      
+              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct2)    
       
       #teeth 2-----------------------------------------------------------------
           x = 145
@@ -769,8 +847,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 4.3
               vy =  i * 5
-              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 1)              
-              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 7)              
+              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct1)              
+              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct2)              
       
       #teeth 3----------------------------------------------------------------
           x = 105
@@ -782,8 +860,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 4.3
               vy =  i * -5          
-              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 7)      
-              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 1)     
+              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct2)      
+              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct1)     
       
       #teeth 4----------------------------------------------------------------
           x = 145
@@ -795,19 +873,19 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 4.3
               vy =  i * -5
-              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 7)      
-              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 1)      
+              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct2)      
+              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct1)      
      #------------------------------------------------------------------------
       elif ep == 0:
       #Pos 4-------------------------------------------------------------------
           ex = 85
           ey = 30
-          pyxel.circ(ex, ey, 4, 9)
-          pyxel.circ(ex - 1, ey + 1, 4, 9)
-          pyxel.circ(ex + 80, ey, 4, 9)      
-          pyxel.circ(ex + 80 + 1, ey + 1, 4, 9)
-          pyxel.circ(ex + 80 + 1, ey + 1, 3, 10)
-          pyxel.circ(ex - 1, ey + 1, 3, 10)  
+          pyxel.circ(ex, ey, 4, ci1)
+          pyxel.circ(ex - 1, ey + 1, 4, ci1)
+          pyxel.circ(ex + 80, ey, 4, ci1)      
+          pyxel.circ(ex + 80 + 1, ey + 1, 4, ci1)
+          pyxel.circ(ex + 80 + 1, ey + 1, 3, ci2)
+          pyxel.circ(ex - 1, ey + 1, 3, ci2)  
       
       #teeth 1----------------------------------------------------------------
           x = 75
@@ -819,8 +897,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 10
               vy =  i * 8
-              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 1)      
-              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 7)    
+              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct1)      
+              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct2)    
       
       #teeth 2-----------------------------------------------------------------
           x = 165
@@ -832,8 +910,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 10
               vy =  i * 8
-              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 1)              
-              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 7)              
+              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct1)              
+              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct2)              
       
       #teeth 3----------------------------------------------------------------
           x = 75
@@ -845,8 +923,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 10
               vy =  i * - 8          
-              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 7)      
-              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, 1)     
+              pyxel.tri(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct2)      
+              pyxel.trib(x+vx, y+vy, x2+vx, y+vy, x3+vx, y3+vy, ct1)     
       
       #teeth 4----------------------------------------------------------------
           x = 165
@@ -858,8 +936,8 @@ def draw_enemy(ep, d):
           for i in range(5):
               vx =  i * 10
               vy =  i * - 8
-              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 7)      
-              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, 1)      
+              pyxel.tri(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct2)      
+              pyxel.trib(x-vx, y+vy, x2-vx, y+vy, x3-vx, y3+vy, ct1)      
 #-----------------------------------------------------------------------------    
 
 def draw_compass(po, m, wl, pa, em, emf, pc, gm, wln, sf, sc, fc):
@@ -996,10 +1074,73 @@ def draw_compass(po, m, wl, pa, em, emf, pc, gm, wln, sf, sc, fc):
       #Message
       for m in range(len(gm.msg)):
           if gm.msg[m][1] == 100:
-              pyxel.text(120, 160 + m*10, gm.msg[m][0], pyxel.frame_count % 16)
+              pyxel.text(120, 160 + m*10, gm.msg[m][0], pyxel.randi(2, 14))
           else:
               pyxel.text(120, 160 + m * 10, gm.msg[m][0], gm.msg[m][1])
                 
 #-----------------------------------------------------------------------------          
+
+def draw_map_window(mz, x, y, p):
+#Map Window-------------------------------------------------------------------
+      mw = []
+      for m in range(len(mz)):
+          mw2 = []
+          for m2 in range(len(mz)):
+              if mz[m][m2] == (0, 0):
+                  mw2.append(0)
+              else:
+                  mw2.append(1)
+          mw.append(mw2)
+      b_pos = (x, y)
+      pyxel.rect(b_pos[0], b_pos[1], 66, 66, 3)
+      pyxel.rectb(b_pos[0], b_pos[1], 66, 66, 13)
+      pyxel.rectb(b_pos[0] - 2, b_pos[1] - 2, 70, 70, 1)
+      pyxel.rectb(b_pos[0] - 6, b_pos[1] + 30, 5, 36, 1)
+      pyxel.rectb(b_pos[0] - 6, b_pos[1] , 5, 36, 1)
+      pyxel.rectb(b_pos[0] + 67, b_pos[1] + 30, 5, 36, 1)
+      pyxel.rectb(b_pos[0] + 67, b_pos[1] , 5, 36, 1)
+      
+      for m3 in range(len(mw)):
+          for m4 in range(len(mw[m3])):
+              if mw[m3][m4] == (1):
+                  c = pyxel.rndi(0, 500)
+                  if c == 0:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 11)
+                  elif c < 10:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 1)
+                  else:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 0)
+              else:
+                  cc = pyxel.rndi(0, 1000)
+                  if cc == 0:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 11)
+                  elif cc < 10:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 1)
+                          
+              if p[0] == m4 and p[1] == m3:
+                     pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 8)
+#-----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
      
  
