@@ -1134,6 +1134,72 @@ def draw_map_window(mz, x, y, p):
 #-----------------------------------------------------------------------------
 
 
+def draw_map_history(mz, x, y, p, h, t):
+      pyxel.rect(50, 29, 156, 93, 0)
+      pyxel.rectb(50, 29, 156, 93, 2)
+      pyxel.rectb(89, 29, 78, 93, 2)
+      pyxel.rectb(50, 102, 156, 20, 2)
+      pyxel.rectb(50, 29, 156, 5, 2)
+#Map Window-------------------------------------------------------------------
+      mw = []
+      for m in range(len(mz)):
+          mw2 = []
+          for m2 in range(len(mz)):
+              if mz[m][m2] == (0, 0) or mz[m][m2] == (0, 2):
+                  mw2.append(0)
+              elif mz[m][m2] == (1, 1):
+                  mw2.append(2)
+              elif mz[m][m2] == (2, 1):
+                  mw2.append(3)                  
+              else:
+                  mw2.append(1)
+          mw.append(mw2)
+      b_pos = (x, y)
+      pyxel.rect(b_pos[0], b_pos[1], 66, 66, 3)
+      pyxel.rectb(b_pos[0], b_pos[1], 66, 66, 13)
+      pyxel.rectb(b_pos[0] - 2, b_pos[1] - 2, 70, 70, 1)
+      pyxel.rectb(b_pos[0] - 6, b_pos[1] + 30, 5, 36, 1)
+      pyxel.rectb(b_pos[0] - 6, b_pos[1] , 5, 36, 1)
+      pyxel.rectb(b_pos[0] + 67, b_pos[1] + 30, 5, 36, 1)
+      pyxel.rectb(b_pos[0] + 67, b_pos[1] , 5, 36, 1)
+      
+      for m3 in range(len(mw)):
+          for m4 in range(len(mw[m3])):
+              if mw[m3][m4] == (1):
+                  c = pyxel.rndi(0, 500)
+                  if c == 0:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 11)
+                  elif c < 10:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 1)
+                  else:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 0)
+              else:
+                  cc = pyxel.rndi(0, 1000)
+                  if cc == 0:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 11)
+                  elif cc < 10:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 1)
+              if mw[m3][m4] == (2):                  
+                  pyxel.rect(b_pos[0] + 1 + m4 * 2, b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 9)
+              elif mw[m3][m4] == (3):                  
+                  pyxel.rect(b_pos[0] + 1 + m4 * 2, b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 10)                  
+                                        
+      #for ih in h:
+      #    pyxel.rect(ih[0] + 3, ih[1] + 3, 2, 2, 5)
+      pyxel.rect(b_pos[0] + 1 + h[t][0]*2, b_pos[1] + 1 + h[t][1]*2, 3, 3, 8)
+#-----------------------------------------------------------------------------
 
 
 

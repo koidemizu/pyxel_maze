@@ -60,6 +60,7 @@ class APP:
       #Player status--------------------------------------------------
       #Player position
       self.pos = [1, 1]
+      self.pos_history = [(1, 1)]
       #Move permission tile list      
       self.move_permit = [(0, 0), (0, 1)]
       #Paint Can count
@@ -85,6 +86,7 @@ class APP:
       #     
       self.pos_angle = 3
       
+      self.step_num = 0
       #----------------------------------------------------------------
       
       #Wall set
@@ -149,21 +151,46 @@ class APP:
       self.key_ipt = False
       self.key_ipt_num = (0, 0)
       self.game_start = False
+      self.game_end = False
+      self.end_move = False
       self.start_bubble = True
       self.screen = 250
+      self.screen_s = 0
       self.game_msg = Game_msg.GameMsg()      
       self.ver = "0.20"
+      self.map_h_ctl = 0
       
   def update(self): 
       #print(self.d_pos)
       #pyxel.mouse(True)
       #print(pyxel.mouse_x, pyxel.mouse_y)        
           
-      self.bubble_update()      
-      #if pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
-       #   print(self.enemys)
+      self.bubble_update()           
 
-      if self.game_over == True:
+      if self.end_move == True:                      
+          if self.screen < 255:
+              self.screen += 6
+          else:
+              self.screen_s += 1
+              if self.screen_s == 30:
+                  for mi in range(9):
+                      self.game_msg.update("", 3)
+                  self.game_msg.update("Congratulations", 8)
+                  self.game_msg.update("You've cleared the game!", 6)
+                  self.game_msg.update("Thank you for playing!", 10)
+                  self.game_msg.update("--------------------------------", 7)
+                  self.game_msg.update("Number of steps: "+str(self.step_num),
+                                       7)
+                  self.game_msg.update("", 10)  
+                  self.game_msg.update("", 10)  
+                  self.game_msg.update("", 10)  
+                  self.game_msg.update("Press R key to return to title.", 11)  
+                  self.screen_s = 0
+                  self.game_end = True
+                  self.end_move = False
+                  self.key_ipt = True
+                  self.key_ipt_num = (99, 99)
+      elif self.game_over == True:
           if pyxel.btnp(pyxel.KEY_R):
               self.status_set()
           elif pyxel.btnp(pyxel.KEY_Q):
@@ -174,8 +201,10 @@ class APP:
               self.bubble_cnt = -1
       else:
           if self.screen > 0:
-              self.screen -= 4
-              print(self.screen)
+              if self.game_end == False:
+                  self.screen -= 4
+              else:
+                  self.screen -= 6
               
           if self.key_ipt == True:
               #Key input------------------------------------------------------
@@ -238,6 +267,19 @@ class APP:
                       self.key_ipt = False
                       self.key_ipt_num = (0, 0)                      
               #---------------------------------------------------------------
+              elif self.key_ipt_num == (2, 1):
+                  if pyxel.btnp(pyxel.KEY_Y):
+                      self.start_bubble = True
+                      self.bubble_cnt = -1
+                      self.bubble_update()
+                      self.key_ipt = False
+                      self.key_ipt_num = (0, 0)       
+                      self.end_move = True
+                      self.screen = 0
+
+              elif self.key_ipt_num == (99, 99) and self.screen < 10:
+                  if pyxel.btnp(pyxel.KEY_R):
+                      self.status_set()                      
           else:
               self.Game_update()
           
@@ -264,6 +306,8 @@ class APP:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[1] = self.pos[1] - 1
+                  self.pos_history.append((self.pos[0], self.pos[1]))
+                  self.step_num += 1
                   self.pos_angle = 1
                   self.scan_update()
               else:
@@ -274,6 +318,8 @@ class APP:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[0] = self.pos[0] + 1
+                  self.step_num += 1
+                  self.pos_history.append((self.pos[0], self.pos[1]))
                   self.pos_angle = 2
                   self.scan_update()
               else:
@@ -284,6 +330,8 @@ class APP:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[1] = self.pos[1] + 1
+                  self.step_num += 1
+                  self.pos_history.append((self.pos[0], self.pos[1]))
                   self.pos_angle = 3
                   self.scan_update()
               else:
@@ -294,6 +342,8 @@ class APP:
                   self.move_flag = True
                   self.e_msg_F = False
                   self.pos[0] = self.pos[0] - 1     
+                  self.step_num += 1
+                  self.pos_history.append((self.pos[0], self.pos[1]))
                   self.pos_angle = 4
                   self.scan_update()
               else:
@@ -466,6 +516,9 @@ class APP:
           self.game_msg.update("Goal position", 3)
           self.game_msg.update("You finally found the gold!", 10)             
           self.game_msg.update("Congratulations!", 10)  
+          self.game_msg.update("Press Y key to continue.", 10)  
+          self.key_ipt = True
+          self.key_ipt_num = t
       #Tile Check(Door)
       elif t in self.wall_list_d:
           self.game_msg.update("Door is locked.", 3)
@@ -706,6 +759,15 @@ class APP:
                           self.wall_list_m,
                           self.maze, self.pos)
 
+          if self.game_end == True:
+              if pyxel.frame_count % 5 == 0:
+                  if self.map_h_ctl + 1 < len(self.pos_history):
+                      self.map_h_ctl += 1
+                  else:
+                      self.map_h_ctl = 0                  
+              d.draw_map_history(self.maze, 95, 35, self.pos, 
+                                 self.pos_history, self.map_h_ctl)          
+
           d.draw_bubble(self.bubbles, 0)
           
           #Draw Game Over text------------------------------------------------
@@ -722,44 +784,38 @@ class APP:
                          self.paint_cnt, self.game_msg, self.wall_list_n,
                          self.scan_flug, self.scan_cnt, self.fence_cnt)
           
-          if self.screen > 0:       
-              #TATE 1DAN
-              #pyxel.rect(1, 1, 254, self.screen, 0)
-              #pyxel.rectb(1, 1, 254, self.screen, 13)
-              #pyxel.rectb(2, 2, 253, self.screen - 2, 1)
-              
-              #PAKU-PAKU
-              #pyxel.rect(1, 1, self.screen / 2, self.screen / 2, 0)
-              #pyxel.rectb(1, 1, self.screen / 2, self.screen / 2, 13)
-              #pyxel.rect(1, 128+(128-self.screen/2),
-              #            self.screen / 2, self.screen / 2, 0)
-              #pyxel.rectb(1, 128+(128-self.screen/2),
-              #            self.screen / 2, self.screen / 2, 13)
-              #pyxel.rect(127+(128-self.screen/2), 1, 
-              #           self.screen / 2, self.screen / 2, 0)
-              #pyxel.rectb(127+(128-self.screen/2), 1, 
-              #            self.screen / 2, self.screen / 2, 13)
-              #pyxel.rect(127+(128-self.screen/2), 128+(128-self.screen/2),
-              #            self.screen / 2, self.screen / 2, 0)
-              #pyxel.rectb(127+(128-self.screen/2), 128+(128-self.screen/2),
-              #            self.screen / 2, self.screen / 2, 13)              
-              
-              #TATE KAN-NON
-              pyxel.rect(1, 1, 254, self.screen / 2, 0)
-              pyxel.rectb(1, 1, 254, self.screen / 2, 13)
-              pyxel.rect(1, 128+(128-self.screen/2), 254, self.screen / 2, 0)
-              pyxel.rectb(1, 128+(128-self.screen/2), 254, self.screen / 2, 13)              
-              
-              #YOKO KAN-NON
-              pyxel.rect(1, 1, self.screen / 2, 254, 0)
-              pyxel.rectb(1, 1, self.screen / 2, 254, 13)
-              pyxel.rect(128+(128-self.screen/2), 1, self.screen / 2, 254, 0)
-              pyxel.rectb(128+(128-self.screen/2), 1,self.screen / 2, 254, 13)                                                                      
+          if self.screen > 0:     
+              if self.game_end == True:                              
+                  #YOKO KAN-NON
+                  pyxel.rect(1, 1, self.screen / 2, 254, 0)
+                  pyxel.rectb(1, 1, self.screen / 2, 254, 13)
+                  pyxel.rect(128+(128-self.screen/2), 1, self.screen / 2,
+                             254, 0)
+                  pyxel.rectb(128+(128-self.screen/2), 1,self.screen / 2,
+                              254, 13)               
+              else:
+                  #YOKO KAN-NON
+                  pyxel.rect(1, 1, self.screen / 2, 254, 0)
+                  pyxel.rectb(1, 1, self.screen / 2, 254, 13)
+                  pyxel.rect(128+(128-self.screen/2), 1, self.screen / 2,
+                             254, 0)
+                  pyxel.rectb(128+(128-self.screen/2), 1,self.screen / 2,
+                              254, 13)                                                                      
+           
          
       #Map window dev    
       if pyxel.btn(pyxel.MOUSE_BUTTON_RIGHT):
-          d.draw_map_window(self.maze, 1, 1, self.pos)
-
+          if pyxel.frame_count % 5 == 0:
+              if self.map_h_ctl + 1 < len(self.pos_history):
+                  self.map_h_ctl += 1
+              else:
+                  self.map_h_ctl = 0                          
+          d.draw_map_history(self.maze, 95, 35, self.pos, 
+                             self.pos_history, self.map_h_ctl)
+          #print(self.pos_history)
+      else:
+          pass
+          #self.map_h_ctl = 0
       
 APP()
 
