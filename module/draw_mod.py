@@ -469,7 +469,7 @@ def draw_paint (p):
           pyxel.line(115, 95, 135, 92, 1)          
 #-----------------------------------------------------------------------------   
 
-def draw_dead_end(d, wl, wld, wll, wll2, wlf, wlm, mz, pos):
+def draw_dead_end(d, wl, wld, wll, wll2, wlf, wlm, mz, pos, e = []):
 #Draw Dead-End----------------------------------------------------------------
       if d[1][1] == 1:
           cc = 2
@@ -503,7 +503,7 @@ def draw_dead_end(d, wl, wld, wll, wll2, wlf, wlm, mz, pos):
               pyxel.rectb(89, 29, 78, 93, 2)
               pyxel.rectb(50, 102, 156, 20, 2)
               pyxel.rectb(50, 29, 156, 5, 2)
-              draw_map_window(mz, 95, 35, pos)
+              draw_map_window(mz, 95, 35, pos, e)
                               
               
           elif d[1] == (1, 1):
@@ -774,9 +774,7 @@ def draw_bubble(b, n):
 
 def draw_game_over():
       pyxel.circ(124, 87, 45, 0)
-      pyxel.text(105, 70, "GAME OVER!!", 8)
-      pyxel.text(105, 90, "R: RETRY", 8)
-      pyxel.text(105, 100, "Q: QUIT", 8)    
+      pyxel.text(105, 90, "GAME OVER!!", 8)
 #------------------------------------------------------------------------------      
 
 def draw_enemy(ep, d, c):
@@ -957,7 +955,7 @@ def draw_compass(po, m, wl, pa, em, emf, pc, gm, wln, sf, sc, fc):
       pyxel.rect(0, 150, 256, 106, 0)
       pyxel.rectb(0, 150, 256, 106, 1)     
       pyxel.rectb(110, 150, 146, 106, 1)           
-      pyxel.rectb(114, 154, 137, 97, 5)       
+      pyxel.rectb(114, 154, 127, 97, 5)       
         
       #Wall
       for d0 in range(5):
@@ -1051,25 +1049,27 @@ def draw_compass(po, m, wl, pa, em, emf, pc, gm, wln, sf, sc, fc):
       pyxel.text(23, 228, em, c)            
       
       #Paint count
-      pyxel.text(72, 170, "(P)", 7)
-      pyxel.blt(83, 160, 1, 0, 0, 16, 16, 15)
-      pyxel.text(98, 170, "x " + str(pc), 7)
+      #pyxel.text(72, 170, "(P)", 7)
+      pyxel.blt(80, 160, 1, 0, 0, 16, 16, 15)
+      pyxel.text(95, 170, "x " + str(pc), 7)
       
       #Scan count
       if sf == True:
-          pyxel.text(72, 188, "(O)", 9)
-          pyxel.blt(83, 178, 1, 16, 0, 16, 16, 15)
-          pyxel.text(98, 188, "x " + str(sc), 9)      
+          #pyxel.text(72, 188, "(O)", 9)
+          pyxel.blt(80, 178, 1, 16, 0, 16, 16, 15)
+          pyxel.text(95, 188, "x " + str(sc), 9)      
           pyxel.circb(40, 183, pyxel.frame_count % 16 + 5, 9)   
       else:
-          pyxel.text(72, 188, "(O)", 7)
-          pyxel.blt(83, 178, 1, 16, 0, 16, 16, 15)
-          pyxel.text(98, 188, "x " + str(sc), 7)                
+          #pyxel.text(72, 188, "(O)", 7)
+          pyxel.blt(80, 178, 1, 16, 0, 16, 16, 15)
+          pyxel.text(95, 188, "x " + str(sc), 7)                
       
       #Wall count
-      pyxel.text(72, 206, "(I)", 7)
-      pyxel.blt(83, 196, 1, 32, 0, 16, 16, 15)
-      pyxel.text(98, 206, "x " + str(fc), 7)            
+      #pyxel.text(72, 206, "(I)", 7)
+      pyxel.blt(80, 196, 1, 32, 0, 16, 16, 15)
+      pyxel.text(95, 206, "x " + str(fc), 7)          
+
+      pyxel.rectb(9, 150, 236, 110, 1)  
       
       #Message
       for m in range(len(gm.msg)):
@@ -1080,7 +1080,7 @@ def draw_compass(po, m, wl, pa, em, emf, pc, gm, wln, sf, sc, fc):
                 
 #-----------------------------------------------------------------------------          
 
-def draw_map_window(mz, x, y, p):
+def draw_map_window(mz, x, y, p, e = []):
 #Map Window-------------------------------------------------------------------
       mw = []
       for m in range(len(mz)):
@@ -1131,15 +1131,22 @@ def draw_map_window(mz, x, y, p):
                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
                                  b_pos[1] + 1 + m3 * 2,
                                  2, 2, 8)
+              #enemy_position
+              for ep in e:                  
+                  if ep.ene_x == m4 and ep.ene_y == m3:
+                      pyxel.rect(b_pos[0] + 1 + m4 * 2,
+                                 b_pos[1] + 1 + m3 * 2,
+                                 2, 2, 2)              
 #-----------------------------------------------------------------------------
 
 
-def draw_map_history(mz, x, y, p, h, t):
-      pyxel.rect(50, 29, 156, 93, 0)
-      pyxel.rectb(50, 29, 156, 93, 2)
-      pyxel.rectb(89, 29, 78, 93, 2)
-      pyxel.rectb(50, 102, 156, 20, 2)
-      pyxel.rectb(50, 29, 156, 5, 2)
+def draw_map_history(mz, x, y, p, h, t, e):
+      if y == 35:
+          pyxel.rect(50, 29, 156, 93, 0)
+          pyxel.rectb(50, 29, 156, 93, 2)
+          pyxel.rectb(89, 29, 78, 93, 2)
+          pyxel.rectb(50, 102, 156, 20, 2)
+          pyxel.rectb(50, 29, 156, 5, 2)
 #Map Window-------------------------------------------------------------------
       mw = []
       for m in range(len(mz)):
@@ -1196,9 +1203,15 @@ def draw_map_history(mz, x, y, p, h, t):
                   pyxel.rect(b_pos[0] + 1 + m4 * 2, b_pos[1] + 1 + m3 * 2,
                                  2, 2, 10)                  
                                         
-      #for ih in h:
-      #    pyxel.rect(ih[0] + 3, ih[1] + 3, 2, 2, 5)
-      pyxel.rect(b_pos[0] + 1 + h[t][0]*2, b_pos[1] + 1 + h[t][1]*2, 3, 3, 8)
+      for ih in range(len(h)):
+          if ih == t:
+              break
+          pyxel.rect(b_pos[0] + 1 + h[ih][0]*2,
+                     b_pos[1] + 1 + h[ih][1]*2, 2, 2, 2)
+      #pyxel.rect(b_pos[0] + 1 + h[t][0]*2, b_pos[1] + 1 + h[t][1]*2, 3, 3, 8)      
+      pyxel.rect(b_pos[0] + 1 + h[t][0]*2, b_pos[1] + 1 + h[t][1]*2, 2, 2, 8)
+
+
 #-----------------------------------------------------------------------------
 
 

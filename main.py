@@ -6,7 +6,8 @@ from module import draw_mod as d, Game_msg, Enemy as eC, Bubble as bC
 
 class APP:
   def __init__(self):         
-      pyxel.init(256, 256, title = "maze", )
+      pyxel.init(236, 256, title = "maze", display_scale=3, fps = 30)
+      pyxel.camera(9, 0)
       pyxel.load('assets/assets.pyxres')                               
       
       self.status_set() 
@@ -18,6 +19,7 @@ class APP:
       self.data = []
       self.maze = []
       self.aisle = []
+      self.a_count = 0
       self.e_ig = [
           (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6),
           (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6),
@@ -51,6 +53,7 @@ class APP:
               elif m == (3, 6):
                   self.d_pos[5] = (m1, m2) 
               elif m == (0, 0):
+                  self.a_count += 1
                   mii = (m1, m2)
                   if mii in self.e_ig:
                       pass
@@ -76,6 +79,12 @@ class APP:
       self.key_flag = False
       
       self.move_flag = False
+      self.key_koutyoku_flag = False
+      self.key_koutyoku = 0
+
+      self.other_action_flag = False
+      self.other_action_num = 0
+      self.other_action_col = 0
       
       #Angle P=Player
       #    ^
@@ -152,52 +161,77 @@ class APP:
       self.key_ipt_num = (0, 0)
       self.game_start = False
       self.game_end = False
+      self.start_move = False
       self.end_move = False
       self.start_bubble = True
       self.screen = 250
       self.screen_s = 0
       self.game_msg = Game_msg.GameMsg()      
-      self.ver = "0.20"
+      self.ver = "1.20"
       self.map_h_ctl = 0
       
-  def update(self): 
-      #print(self.d_pos)
-      #pyxel.mouse(True)
-      #print(pyxel.mouse_x, pyxel.mouse_y)        
-          
+  def update(self):               
       self.bubble_update()           
-
+      
       if self.end_move == True:                      
           if self.screen < 255:
               self.screen += 6
           else:
               self.screen_s += 1
               if self.screen_s == 30:
+                  ep1 = int(len(list(set(self.pos_history))))
+                  ep2 = int(self.a_count)
                   for mi in range(9):
                       self.game_msg.update("", 3)
                   self.game_msg.update("Congratulations", 8)
                   self.game_msg.update("You've cleared the game!", 6)
                   self.game_msg.update("Thank you for playing!", 10)
-                  self.game_msg.update("--------------------------------", 7)
+                  self.game_msg.update("--------------------------------", 13)
                   self.game_msg.update("Number of steps: "+str(self.step_num),
                                        7)
-                  self.game_msg.update("", 10)  
-                  self.game_msg.update("", 10)  
-                  self.game_msg.update("", 10)  
-                  self.game_msg.update("Press R key to return to title.", 11)  
+                  self.game_msg.update("Exploration Progress: " + 
+                                       str('{:.0%}'.format(ep1 / ep2)),
+                                       7)
+                  self.game_msg.update("", 10)                    
+                  self.game_msg.update("Press R key or GamePad Button.", 11)  
                   self.screen_s = 0
                   self.game_end = True
                   self.end_move = False
                   self.key_ipt = True
                   self.key_ipt_num = (99, 99)
+      elif self.start_move == True:                      
+          if self.screen < 255:
+              self.screen += 6
+          else:
+              self.screen_s += 1
+              if self.screen_s == 30:                  
+                  self.start_move = False   
+                  self.screen_s = 0
       elif self.game_over == True:
-          if pyxel.btnp(pyxel.KEY_R):
+          for go in range(8):
+              self.game_msg.update("", 3)                    
+          self.game_msg.update("The path you followed.", 8)
+          self.game_msg.update("Press R key or GamePad Button.", 11)            
+          for go2 in range(7):
+              self.game_msg.update("", 3)
+          
+          if (pyxel.btnp(pyxel.KEY_R) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
               self.status_set()
-          elif pyxel.btnp(pyxel.KEY_Q):
-              pyxel.quit()
+          
       elif self.game_start == False:
-          if pyxel.btnp(pyxel.KEY_S):
+             if (pyxel.btnp(pyxel.KEY_S) or 
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or
+             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)
+             ):
               self.game_start = True
+              self.start_move = True
+              self.screen = 0
               self.bubble_cnt = -1
       else:
           if self.screen > 0:
@@ -210,7 +244,7 @@ class APP:
               #Key input------------------------------------------------------
               #Lever------------------------------------------------------
               if self.key_ipt_num in self.wall_list_l:                  
-                  if pyxel.btnp(pyxel.KEY_Y):
+                  if pyxel.btnp(pyxel.KEY_Y) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
                       self.game_msg.update("Yes", 3)
                       self.game_msg.update("Somewhere a door opened.", 9)
                       ip = self.key_ipt_num[1]
@@ -239,13 +273,13 @@ class APP:
                       elif ip == 6:
                           self.maze[self.d_pos[5][0]][self.d_pos[5][1]]=(0, 0)
                           
-                  elif pyxel.btnp(pyxel.KEY_N):
+                  elif pyxel.btnp(pyxel.KEY_N) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_B):
                       self.game_msg.update("No", 3)
                       self.key_ipt = False
                       self.key_ipt_num = (0, 0)
               #Fence------------------------------------------------------
               elif self.key_ipt_num in self.wall_list_f:
-                  if pyxel.btnp(pyxel.KEY_Y):
+                  if pyxel.btnp(pyxel.KEY_Y) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
                       self.game_msg.update("Yes", 3)
                       self.game_msg.update("Fence removed.", 9)
                       ip = self.key_ipt_num[1]
@@ -262,23 +296,27 @@ class APP:
                       self.dead_end[0] = 0
                       self.wall_update()
                       
-                  elif pyxel.btnp(pyxel.KEY_N):
+                  elif pyxel.btnp(pyxel.KEY_N) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_B):
                       self.game_msg.update("No", 3)
                       self.key_ipt = False
                       self.key_ipt_num = (0, 0)                      
               #---------------------------------------------------------------
-              elif self.key_ipt_num == (2, 1):
-                  if pyxel.btnp(pyxel.KEY_Y):
-                      self.start_bubble = True
-                      self.bubble_cnt = -1
-                      self.bubble_update()
-                      self.key_ipt = False
-                      self.key_ipt_num = (0, 0)       
-                      self.end_move = True
-                      self.screen = 0
+              #elif self.key_ipt_num == (2, 1):
+               #   if pyxel.btnp(pyxel.KEY_Y):
+                #      self.start_bubble = True
+                 #     self.bubble_cnt = -1
+                  #    self.bubble_update()
+                   #   self.key_ipt = False
+                    #  self.key_ipt_num = (0, 0)       
+                     # self.end_move = True
+                      #self.screen = 0
 
               elif self.key_ipt_num == (99, 99) and self.screen < 10:
-                  if pyxel.btnp(pyxel.KEY_R):
+                  if (pyxel.btnp(pyxel.KEY_R) or
+                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
+                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) or
+                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or
+                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                       self.status_set()                      
           else:
               self.Game_update()
@@ -294,212 +332,238 @@ class APP:
       #Enemy reset
       self.enemy_pos = 9      
       self.enemy_col = 1
-              
-      #Player Controll--------------------------------------------------------
-      self.move_flag = False
-      #Go ahead
-      if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W):
-          self.dead_end[0] = 0
-          if self.pos_angle == 1:
-              tile = self.maze[self.pos[1] - 1][self.pos[0]]
-              if tile in self.move_permit:
-                  self.move_flag = True
-                  self.e_msg_F = False
-                  self.pos[1] = self.pos[1] - 1
-                  self.pos_history.append((self.pos[0], self.pos[1]))
-                  self.step_num += 1
-                  self.pos_angle = 1
-                  self.scan_update()
-              else:
-                  self.chk_other_tile(tile)
-          elif self.pos_angle == 2:
-              tile = self.maze[self.pos[1]][self.pos[0] + 1]
-              if tile in self.move_permit:
-                  self.move_flag = True
-                  self.e_msg_F = False
-                  self.pos[0] = self.pos[0] + 1
-                  self.step_num += 1
-                  self.pos_history.append((self.pos[0], self.pos[1]))
-                  self.pos_angle = 2
-                  self.scan_update()
-              else:
-                  self.chk_other_tile(tile)
-          elif self.pos_angle == 3:
-              tile = self.maze[self.pos[1] + 1][self.pos[0]]
-              if tile in self.move_permit:
-                  self.move_flag = True
-                  self.e_msg_F = False
-                  self.pos[1] = self.pos[1] + 1
-                  self.step_num += 1
-                  self.pos_history.append((self.pos[0], self.pos[1]))
-                  self.pos_angle = 3
-                  self.scan_update()
-              else:
-                  self.chk_other_tile(tile)
-          elif self.pos_angle == 4:
-              tile = self.maze[self.pos[1]][self.pos[0] - 1] 
-              if tile in self.move_permit:
-                  self.move_flag = True
-                  self.e_msg_F = False
-                  self.pos[0] = self.pos[0] - 1     
-                  self.step_num += 1
-                  self.pos_history.append((self.pos[0], self.pos[1]))
-                  self.pos_angle = 4
-                  self.scan_update()
-              else:
-                  self.chk_other_tile(tile)
+      
+      if self.other_action_flag == False:
+          self.Player_update()
 
-          #Enemy action
-          self.e_msg_c = 0          
-          for e in self.enemys:
-              if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
-                  self.enemy_pos = 0                  
-                  self.enemy_col = e.coller
-                  self.game_over = True
-                  
-              if self.enemy_pos > 0:
-                  if self.move_flag == True:
-                      e.update()                  
-                  x = abs(self.pos[0] - e.ene_x) 
-                  y = abs(self.pos[1] - e.ene_y) 
-                  if x < 5 and y < 5:                      
-                      self.e_msg_c += 1
-                  if x < 3 and y < 3:
-                      self.e_msg_F = True            
-                  self.e_msg = "Enemies nearby: " + str(self.e_msg_c) 
-                      
-      #Turn to the back
-      if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S):
-          self.dead_end[0] = 0
-          if self.pos_angle == 1:
-              self.pos_angle = 3
-          elif self.pos_angle == 2:
-              self.pos_angle = 4
-          elif self.pos_angle == 3:
-              self.pos_angle = 1
-          elif self.pos_angle == 4:
-              self.pos_angle = 2
-          
-      #Turn to the right
-      if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.KEY_D):
-          self.dead_end[0] = 0
-          if self.pos_angle == 1:
-              self.pos_angle = 2
-          elif self.pos_angle == 2:              
-              self.pos_angle = 3
-          elif self.pos_angle == 3:              
-              self.pos_angle = 4
-          elif self.pos_angle == 4:              
-              self.pos_angle = 1
-          
-      #Turn to the left
-      if pyxel.btnp(pyxel.KEY_LEFT)or pyxel.btnp(pyxel.KEY_A):
-          self.dead_end[0] = 0
-          if self.pos_angle == 1:
-              self.pos_angle = 4
-          elif self.pos_angle == 2:             
-              self.pos_angle = 1
-          elif self.pos_angle == 3:              
-              self.pos_angle = 2
-          elif self.pos_angle == 4:
-              self.pos_angle = 3    
-      #-----------------------------------------------------------------------  
-      
       #Wall-Floor set & Enemy-serch-------------------------------------------
-      self.wall_update()
-      
+      self.wall_update()          
+
       #Other action-----------------------------------------------------------
-      self.other_action()
+      if (pyxel.btnp(pyxel.KEY_SPACE) or
+          pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
+          pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) ):
+          if self.other_action_flag == False:
+              self.other_action_flag = True
+          else:
+              self.other_action_flag = False
+      
+      if self.other_action_flag == True:
+          self.other_action()          
+
+  def Player_update(self):
+      #Player Controll--------------------------------------------------------
+      if self.key_koutyoku_flag == True:
+          self.key_koutyoku += 1
+          if self.key_koutyoku > 5:
+              self.key_koutyoku_flag = False
+              self.key_koutyoku = 0
+      else:
+          self.move_flag = False
+          #Go ahead
+          if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+              self.key_koutyoku_flag = True
+              self.dead_end[0] = 0
+              if self.pos_angle == 1:
+                  tile = self.maze[self.pos[1] - 1][self.pos[0]]
+                  if tile in self.move_permit:
+                      self.move_flag = True
+                      self.e_msg_F = False
+                      self.pos[1] = self.pos[1] - 1
+                      self.pos_history.append((self.pos[0], self.pos[1]))
+                      self.step_num += 1
+                      self.pos_angle = 1
+                      self.scan_update()
+                  else:
+                      self.chk_other_tile(tile)
+              elif self.pos_angle == 2:
+                  tile = self.maze[self.pos[1]][self.pos[0] + 1]
+                  if tile in self.move_permit:
+                      self.move_flag = True
+                      self.e_msg_F = False
+                      self.pos[0] = self.pos[0] + 1
+                      self.step_num += 1
+                      self.pos_history.append((self.pos[0], self.pos[1]))
+                      self.pos_angle = 2
+                      self.scan_update()
+                  else:
+                      self.chk_other_tile(tile)
+              elif self.pos_angle == 3:
+                  tile = self.maze[self.pos[1] + 1][self.pos[0]]
+                  if tile in self.move_permit:
+                      self.move_flag = True
+                      self.e_msg_F = False
+                      self.pos[1] = self.pos[1] + 1
+                      self.step_num += 1
+                      self.pos_history.append((self.pos[0], self.pos[1]))
+                      self.pos_angle = 3
+                      self.scan_update()
+                  else:
+                      self.chk_other_tile(tile)
+              elif self.pos_angle == 4:
+                  tile = self.maze[self.pos[1]][self.pos[0] - 1] 
+                  if tile in self.move_permit:
+                      self.move_flag = True
+                      self.e_msg_F = False
+                      self.pos[0] = self.pos[0] - 1     
+                      self.step_num += 1
+                      self.pos_history.append((self.pos[0], self.pos[1]))
+                      self.pos_angle = 4
+                      self.scan_update()
+                  else:
+                      self.chk_other_tile(tile)
+
+              #Enemy action
+              self.e_msg_c = 0          
+              for e in self.enemys:
+                  if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
+                      self.enemy_pos = 0                  
+                      self.enemy_col = e.coller
+                      self.game_over = True
+                  
+                  if self.enemy_pos > 0:
+                      if self.move_flag == True:
+                          e.update()                  
+                      x = abs(self.pos[0] - e.ene_x) 
+                      y = abs(self.pos[1] - e.ene_y) 
+                      if x < 5 and y < 5:                      
+                          self.e_msg_c += 1
+                      if x < 3 and y < 3:
+                          self.e_msg_F = True            
+                      self.e_msg = "Enemies nearby: " + str(self.e_msg_c) 
+                      
+          #Turn to the back
+          elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+              self.key_koutyoku_flag = True
+              self.dead_end[0] = 0
+              if self.pos_angle == 1:
+                  self.pos_angle = 3
+              elif self.pos_angle == 2:
+                  self.pos_angle = 4
+              elif self.pos_angle == 3:
+                  self.pos_angle = 1
+              elif self.pos_angle == 4:
+                  self.pos_angle = 2
+          
+          #Turn to the right
+          elif pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.KEY_D) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+              self.key_koutyoku_flag = True
+              self.dead_end[0] = 0
+              if self.pos_angle == 1:
+                  self.pos_angle = 2
+              elif self.pos_angle == 2:              
+                  self.pos_angle = 3
+              elif self.pos_angle == 3:              
+                  self.pos_angle = 4
+              elif self.pos_angle == 4:              
+                  self.pos_angle = 1
+          
+          #Turn to the left
+          elif pyxel.btnp(pyxel.KEY_LEFT)or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+              self.key_koutyoku_flag = True
+              self.dead_end[0] = 0
+              if self.pos_angle == 1:
+                  self.pos_angle = 4
+              elif self.pos_angle == 2:             
+                  self.pos_angle = 1
+              elif self.pos_angle == 3:              
+                  self.pos_angle = 2
+              elif self.pos_angle == 4:
+                  self.pos_angle = 3    
+          #-----------------------------------------------------------------------  
+      
       
       
   def other_action(self):
-      #Paint floor action-----------------------------------------------------
-      if pyxel.btnp(pyxel.KEY_P):
-          if self.paint_cnt > 0:
-              if self.maze[self.pos[1]][self.pos[0]] == (0, 1):
-                  pass
-              else:
-                  self.maze[self.pos[1]][self.pos[0]] = (0, 1)                        
-                  self.paint_cnt -= 1
-                  
-      #Scan action-----------------------------------------------------
-      if pyxel.btnp(pyxel.KEY_O):
-          if self.scan_flug == False:
-              if self.scan_cnt > 0:
-                  self.game_msg.update("Scanning start.", 9)
-                  self.scan_flug = True
-                  self.scan_cnt -= 1
-                  self.scan_cnt_f = 30
-                  
-      #Fence action-----------------------------------------------------                  
-      if pyxel.btnp(pyxel.KEY_I):
-          self.fence_flag = 0
-          if self.fence_cnt > 0:
-              if self.pos_angle == 1:
-                  tile = self.maze[self.pos[1] - 1][self.pos[0]]
-                  for e in self.enemys:
-                      print(e.ene_x, e.ene_y)
-                      print(self.pos)
-                      if e.ene_y == self.pos[1] - 1 and e.ene_x == self.pos[0]:
-                          self.game_msg.update("The enemy is too close.", 9)
-                          self.game_msg.update("Fence could not be set up.", 9)
-                          self.fence_flag = 3
-                          break
-                  if tile in self.move_permit and self.fence_flag == 0:
-                      self.maze[self.pos[1] - 1][self.pos[0]] = (0, 2)
-                      self.fence_cnt -= 1
-                      self.game_msg.update("You have set up a fence.", 9)                              
-                      
-              elif self.pos_angle == 2:
-                  tile = self.maze[self.pos[1]][self.pos[0] + 1]
-                  for e in self.enemys:
-                      print(e.ene_x, e.ene_y)
-                      print(self.pos)
-                      if e.ene_y == self.pos[1] and e.ene_x == self.pos[0]+1:
-                          self.game_msg.update("The enemy is too close.", 9)
-                          self.game_msg.update("Fence could not be set up.", 9)
-                          self.fence_flag = 3
-                          break                      
-                  if tile in self.move_permit and self.fence_flag == 0:
-                      self.maze[self.pos[1]][self.pos[0]+1] = (0, 2)
-                      self.fence_cnt -= 1
-                      self.game_msg.update("You have set up a fence.", 9)                      
-                      
-              elif self.pos_angle == 3:
-                  tile = self.maze[self.pos[1] + 1][self.pos[0]]
-                  for e in self.enemys:
-                      print(e.ene_x, e.ene_y)
-                      print(self.pos)
-                      if e.ene_y == self.pos[1] + 1 and e.ene_x == self.pos[0]:
-                          self.game_msg.update("The enemy is too close.", 9)
-                          self.game_msg.update("Fence could not be set up.", 9)
-                          self.fence_flag = 3
-                          break                    
-                  if tile in self.move_permit and self.fence_flag == 0:
-                      self.maze[self.pos[1] + 1][self.pos[0]] = (0, 2)
-                      self.fence_cnt -= 1
-                      self.game_msg.update("You have set up a fence.", 9)                                    
-                      
-              elif self.pos_angle == 4:
-                  tile = self.maze[self.pos[1]][self.pos[0] - 1] 
-                  for e in self.enemys:
-                      print(e.ene_x, e.ene_y)
-                      print(self.pos)
-                      if e.ene_y == self.pos[1] and e.ene_x == self.pos[0]-1:
-                          self.game_msg.update("The enemy is too close.", 9)
-                          self.game_msg.update("Fence could not be set up.", 9)
-                          self.fence_flag = 3
-                          break
-                  if tile in self.move_permit and self.fence_flag == 0:
-                      self.maze[self.pos[1]][self.pos[0]-1] = (0, 2)
-                      self.fence_cnt -= 1
-                      self.game_msg.update("You have set up a fence.", 9)                      
+      if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+          if self.other_action_num > 0:
+              self.other_action_num -= 1
+        
+      if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+          if self.other_action_num < 2:
+              self.other_action_num += 1              
+      
+      if (pyxel.btnp(pyxel.KEY_Y) or
+          pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) ):          
+          if self.other_action_num == 0:              
+              self.other_action_flag = False
+              #Paint floor action-----------------------------------------------------      
+              if self.paint_cnt > 0:
+                  if self.maze[self.pos[1]][self.pos[0]] == (0, 1):
+                      pass
+                  else:
+                      self.maze[self.pos[1]][self.pos[0]] = (0, 1)                        
+                      self.paint_cnt -= 1
+          elif self.other_action_num == 1:              
+              self.other_action_flag = False
+              #Scan action-----------------------------------------------------
+              if self.scan_flug == False:
+                 if self.scan_cnt > 0:
+                      self.game_msg.update("Scanning start.", 9)
+                      self.scan_flug = True
+                      self.scan_cnt -= 1
+                      self.scan_cnt_f = 30
+          elif self.other_action_num == 2:      
+              #Fence action-----------------------------------------------------      
+                  self.other_action_flag = False            
+                  self.fence_flag = 0
+                  if self.fence_cnt > 0:
+                      if self.pos_angle == 1:
+                          tile = self.maze[self.pos[1] - 1][self.pos[0]]
+                          for e in self.enemys:
+                              if e.ene_y == self.pos[1] - 1 and e.ene_x == self.pos[0]:
+                                  self.game_msg.update("The enemy is too close.", 9)
+                                  self.game_msg.update("Fence could not be set up.", 9)
+                                  self.fence_flag = 3
+                                  break
+                          if tile in self.move_permit and self.fence_flag == 0:
+                              self.maze[self.pos[1] - 1][self.pos[0]] = (0, 2)
+                              self.fence_cnt -= 1
+                              self.game_msg.update("You have set up a fence.", 9)                              
                               
-      #-----------------------------------------------------------------------      
+                      elif self.pos_angle == 2:
+                          tile = self.maze[self.pos[1]][self.pos[0] + 1]
+                          for e in self.enemys:                     
+                              if e.ene_y == self.pos[1] and e.ene_x == self.pos[0]+1:
+                                  self.game_msg.update("The enemy is too close.", 9)
+                                  self.game_msg.update("Fence could not be set up.", 9)
+                                  self.fence_flag = 3
+                                  break                      
+                          if tile in self.move_permit and self.fence_flag == 0:
+                              self.maze[self.pos[1]][self.pos[0]+1] = (0, 2)
+                              self.fence_cnt -= 1
+                              self.game_msg.update("You have set up a fence.", 9)                      
+                      
+                      elif self.pos_angle == 3:
+                          tile = self.maze[self.pos[1] + 1][self.pos[0]]
+                          for e in self.enemys:
+                              if e.ene_y == self.pos[1] + 1 and e.ene_x == self.pos[0]:
+                                  self.game_msg.update("The enemy is too close.", 9)
+                                  self.game_msg.update("Fence could not be set up.", 9)
+                                  self.fence_flag = 3
+                                  break                    
+                          if tile in self.move_permit and self.fence_flag == 0:
+                              self.maze[self.pos[1] + 1][self.pos[0]] = (0, 2)
+                              self.fence_cnt -= 1
+                              self.game_msg.update("You have set up a fence.", 9)                                    
+                      
+                      elif self.pos_angle == 4:
+                          tile = self.maze[self.pos[1]][self.pos[0] - 1] 
+                          for e in self.enemys: 
+                              if e.ene_y == self.pos[1] and e.ene_x == self.pos[0]-1:
+                                  self.game_msg.update("The enemy is too close.", 9)
+                                  self.game_msg.update("Fence could not be set up.", 9)
+                                  self.fence_flag = 3
+                                  break
+                          if tile in self.move_permit and self.fence_flag == 0:
+                              self.maze[self.pos[1]][self.pos[0]-1] = (0, 2)
+                              self.fence_cnt -= 1
+                              self.game_msg.update("You have set up a fence.", 9)                      
+                              
+              #-----------------------------------------------------------------------      
       
   def scan_update(self):
-      if self.scan_flug == True:
-          print(self.scan_cnt_f)
+      if self.scan_flug == True:          
           self.scan_cnt_f -= 1
           if self.scan_cnt_f < 1:
               self.scan_flug = False
@@ -516,7 +580,7 @@ class APP:
           self.game_msg.update("Goal position", 3)
           self.game_msg.update("You finally found the gold!", 10)             
           self.game_msg.update("Congratulations!", 10)  
-          self.game_msg.update("Press Y key to continue.", 10)  
+          self.game_msg.update("Press S key or Any GamePad Button.", 10)  
           self.key_ipt = True
           self.key_ipt_num = t
       #Tile Check(Door)
@@ -527,7 +591,7 @@ class APP:
           self.game_msg.update("You have found the lever.", 3)
           self.game_msg.update("Do you want to activate", 11)
           self.game_msg.update("the lever?", 11)   
-          self.game_msg.update("Y = Yes,  N = No", 11)   
+          self.game_msg.update("Y = Yes,  N = No", 11, 1)   
           self.key_ipt = True
           self.key_ipt_num = t
       #Tile Check(Fence)
@@ -712,7 +776,7 @@ class APP:
       pyxel.cls(0)                        
       
       #Game start information
-      if self.game_start == False:
+      if self.game_start == False or self.start_move == True:
           pyxel.blt(10, 10, 2, 0, 0, 232, 40, 14)
           
           y = 50
@@ -740,11 +804,22 @@ class APP:
           
           d.draw_bubble(self.bubbles, 1)
           
-          pyxel.text(92, 202, "Press S key to start.", 1)
-          pyxel.text(91, 201, "Press S key to start.", 5)
-          pyxel.text(90, 200, "Press S key to start.", 7)
+          pyxel.text(47, 202, "Press S key or Any GamePad Button to start.", 1)
+          pyxel.text(46, 201, "Press S key or Any GamePad Button to start.", 5)
+          pyxel.text(45, 200, "Press S key or Any GamePad Button to start.", 7)
           
           pyxel.text(205, 55, "Ver." + self.ver, 7)
+          
+          #Game Start Door Movie----------------------------------------------
+          if self.start_move == True:
+              if self.screen > 0:                                    
+                  #YOKO KAN-NON
+                  pyxel.rect(0, 0, self.screen / 2, 254, 0)
+                  pyxel.rectb(0, 0, self.screen / 2, 254, 13)
+                  pyxel.rect(128+(128-self.screen/2), 0, self.screen / 2,
+                             254, 0)
+                  pyxel.rectb(128+(128-self.screen/2), 0,self.screen / 2,
+                              254, 13)               
           
       else:          
           d.draw_wall(self.wall, self.wall_list_n,
@@ -757,7 +832,7 @@ class APP:
                           self.wall_list_d, self.wall_list_l, 
                           self.wall_list_l2, self.wall_list_f, 
                           self.wall_list_m,
-                          self.maze, self.pos)
+                          self.maze, self.pos, self.enemys)
 
           if self.game_end == True:
               if pyxel.frame_count % 5 == 0:
@@ -766,7 +841,8 @@ class APP:
                   else:
                       self.map_h_ctl = 0                  
               d.draw_map_history(self.maze, 95, 35, self.pos, 
-                                 self.pos_history, self.map_h_ctl)          
+                                 self.pos_history, self.map_h_ctl,
+                                 self.enemys)          
 
           d.draw_bubble(self.bubbles, 0)
           
@@ -787,32 +863,47 @@ class APP:
           if self.screen > 0:     
               if self.game_end == True:                              
                   #YOKO KAN-NON
-                  pyxel.rect(1, 1, self.screen / 2, 254, 0)
-                  pyxel.rectb(1, 1, self.screen / 2, 254, 13)
-                  pyxel.rect(128+(128-self.screen/2), 1, self.screen / 2,
+                  pyxel.rect(0, 0, self.screen / 2, 254, 0)
+                  pyxel.rectb(0, 0, self.screen / 2, 254, 13)
+                  pyxel.rect(128+(128-self.screen/2), 0, self.screen / 2,
                              254, 0)
-                  pyxel.rectb(128+(128-self.screen/2), 1,self.screen / 2,
+                  pyxel.rectb(128+(128-self.screen/2), 0,self.screen / 2,
                               254, 13)               
               else:
                   #YOKO KAN-NON
-                  pyxel.rect(1, 1, self.screen / 2, 254, 0)
-                  pyxel.rectb(1, 1, self.screen / 2, 254, 13)
-                  pyxel.rect(128+(128-self.screen/2), 1, self.screen / 2,
+                  pyxel.rect(0, 0, self.screen / 2, 254, 0)
+                  pyxel.rectb(0, 0, self.screen / 2, 254, 13)
+                  pyxel.rect(128+(128-self.screen/2), 0, self.screen / 2,
                              254, 0)
-                  pyxel.rectb(128+(128-self.screen/2), 1,self.screen / 2,
+                  pyxel.rectb(128+(128-self.screen/2), 0,self.screen / 2,
                               254, 13)                                                                      
            
+          if self.other_action_flag == True:
+              if pyxel.frame_count % 45 == 0:
+                  if self.other_action_col == 0:
+                      self.other_action_col = 1
+                  else:
+                      self.other_action_col = 0
+             
+              if self.other_action_col == 0:
+                  colk = 10
+              else:
+                  colk = 9
+
+              pyxel.rectb(10, 151, 100, 104, colk)
+              on = self.other_action_num * 18              
+              pyxel.tri(71, 167 + on, 71, 173 + on, 77, 170 + on, colk)
          
       #Map window dev    
-      if pyxel.btn(pyxel.MOUSE_BUTTON_RIGHT):
+      #Draw Game Over Map------------------------------------------------
+      if self.game_over == True or pyxel.btn(pyxel.MOUSE_BUTTON_RIGHT):
           if pyxel.frame_count % 5 == 0:
               if self.map_h_ctl + 1 < len(self.pos_history):
                   self.map_h_ctl += 1
               else:
                   self.map_h_ctl = 0                          
-          d.draw_map_history(self.maze, 95, 35, self.pos, 
-                             self.pos_history, self.map_h_ctl)
-          #print(self.pos_history)
+          d.draw_map_history(self.maze, 121, 182, self.pos, 
+                             self.pos_history, self.map_h_ctl, self.enemys)          
       else:
           pass
           #self.map_h_ctl = 0

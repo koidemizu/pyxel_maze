@@ -13,7 +13,10 @@ class GameMsg:
                  ["You have entered the maze.",3],
                  ["Find the gold!",10],                 
                  ]    
-      
-  def update(self, msg, c):
+      self.key_inpt = False
+
+  def update(self, msg, c, keyon = 0):
       self.msg.pop(0)
-      self.msg.append([msg, c])
+      self.msg.append([msg, c])      
+      if keyon == 1:
+         self.key_inpt = True

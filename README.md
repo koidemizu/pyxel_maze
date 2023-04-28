@@ -1,31 +1,23 @@
 # pyxel_maze<br>
-
-python‚ÌƒŒƒgƒƒQ[ƒ€ƒGƒ“ƒWƒ“"pyxel"‚Åì¬‚µ‚½–À˜HƒQ[ƒ€‚Å‚·B<br>
-This is a maze game created with the python retro game engine "pyxel".<br>
-![image0](./image/0.png)<br>
+ã“ã®ã‚²ãƒ¼ãƒ ã¯pythonã®ãƒ¬ãƒˆãƒ­ã‚²ãƒ¼ãƒ ã‚¨ãƒ³ã‚¸ãƒ³ã€Œpyxelã€ã§ä½œã‚‰ã‚ŒãŸè¿·è·¯ã‚²ãƒ¼ãƒ ã§ã™ã€‚<br>
+ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯æ²ˆæ²¡ã—ãŸæ½œæ°´è‰¦ã‚’æ¢æ¤œã—ã€é‡‘å¡Šã‚’ç™ºè¦‹ã™ã‚‹ã“ã¨ã‚’ç›®æŒ‡ã—ã¾ã™ã€‚<br>
 <br>
-
-ƒvƒŒƒCƒ„[‚Í[ŠC‚Ìƒ_ƒ“ƒWƒ‡ƒ“‚ğƒCƒ[ƒW‚µ‚½–À˜H‚ğ’Tõ‚µ‚Ü‚·B<br>
-The player explores a maze that resembles a deep-sea dungeon.<br>
-![image1](./image/1.png)<br>
+<<æ“ä½œæ–¹æ³•>><br>
+ä¸Šä¸‹å·¦å³ã‚­ãƒ¼ï¼šç§»å‹•<br>
+Pã‚­ãƒ¼ï¼šåºŠã«ç›®å°ã‚’ä»˜ã‘ã¾ã™ã€‚ãƒŸãƒ‹ãƒãƒƒãƒ—ã«ã‚‚å°ãŒè¡¨ç¤ºã•ã‚Œã¾ã™ã€‚<br>
+Oã‚­ãƒ¼ï¼šä¸€å®šæ­©æ•°ã®é–“ã€å‘¨å›²ã‚’ã‚¹ã‚­ãƒ£ãƒ³ã—ãƒŸãƒ‹ãƒãƒƒãƒ—ã«çµæœã‚’åæ˜ ã•ã›ã¾ã™ã€‚é€šå¸¸ã®é€šè·¯ã§ã¯ãªã„ã‚®ãƒŸãƒƒã‚¯ãƒã‚¹ãŒã‚ã£ãŸå ´åˆã¯ãƒãƒƒãƒ—ã®è‰²ãŒå¤‰ã‚ã‚Šã¾ã™ã€‚<br>
+Iã‚­ãƒ¼ï¼šãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®1ãƒã‚¹å‰æ–¹ã«ãƒ•ã‚§ãƒ³ã‚¹ã‚’è¨­ç½®ã—ã¾ã™ã€‚æ•µã®æ¥è¿‘ã‚’é˜²ã„ã ã‚Šã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚<br>
 <br>
-
-–À˜H‚É‚Í“GƒLƒƒƒ‰ƒNƒ^[‚â—lX‚ÈƒMƒ~ƒbƒN‚ğì¬‚·‚é—\’è‚Å‚·B<br>
-I plan to create enemy characters and various gimmicks in the maze.<br>
-![image2](./image/2.png)<br>
+ãã®ã»ã‹ã®æ“ä½œãŒå¿…è¦ãªæ™‚ã¯ã‚²ãƒ¼ãƒ ç”»é¢ã®ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ä¸Šã«æ¡ˆå†…ãŒè¡¨ç¤ºã•ã‚Œã¾ã™ã€‚<br>
 <br>
-
-Œ»İŠJ”­’†‚Å‚·B–À˜H‚Ì’†‚ğ•à‚«‚Ü‚í‚é‚±‚Æ‚ª‚Å‚«‚é‚Æ‚±‚ë‚Ü‚Å‚Íi‚İ‚Ü‚µ‚½B<br>
-It is currently under development.<br>
-I have progressed to the point where you can walk around in the maze.<br>
-![image3](./image/3.png)<br>
+This game is a maze game made with pyxel, a python retro game engine.<br>
+Players explore a sunken submarine and try to find GOLD.<br>
 <br>
-
-ìÒ‚ÍWindows10AWindows11‚ÅŠJ”­‚ğs‚Á‚Ä‚¨‚èA‚»‚Ì‚Ù‚©‚ÌŠÂ‹«‚Å‚Ì“®ìŠm”F‚Í‚µ‚Ä‚¢‚Ü‚¹‚ñB<br>
-I am developing on Windows 10 and Windows 11, and I have not tested the game on other environments.<br>
+<<Controls>><br>
+Up, down, left, right keys: Move<br>
+P key: Marks the floor. The mark will also appear on the mini-map.<br>
+O key: Scan the surroundings for a certain number of steps and the mini-map will reflect the result. <br>
+       If there is a gimmick square that is not a normal passage, the map will change color.<br>
+I key: Places a fence one square in front of the player. This can be used to prevent enemies from approaching.<br>
 <br>
-
-—V‚ñ‚Å‚­‚ê‚½‚ç‚¤‚ê‚µ‚¢‚Å‚·B<br>
-‚²——‚¢‚½‚¾‚«‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚·B<br>
-I'd be happy if you could play with it.<br>
 Thank you for reading.<br>
