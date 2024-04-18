@@ -6,13 +6,12 @@ from module import draw_mod as d, Game_msg, Enemy as eC, Bubble as bC
 
 class APP:
   def __init__(self):         
-      pyxel.init(236, 256, title = "maze", display_scale=3, fps = 30)
+      pyxel.init(236, 340, title = "maze", fps = 30)      
       pyxel.camera(9, 0)
       pyxel.load('assets/assets.pyxres')                               
       
-      self.status_set() 
-     
-      pyxel.run(self.update, self.draw)
+      self.status_set()       
+      pyxel.run(self.update, self.draw)      
      
   def status_set(self):        
       #Maze set
@@ -30,13 +29,15 @@ class APP:
           ]
       
       mi = pyxel.rndi(0, 2)
+      #mi = 0
       for i in range(32):
           self.data = []
           for i2 in range(32):
-              self.data.append(pyxel.tilemap(0).pget(i2, i + mi * 32))
+              self.data.append(pyxel.tilemaps[0].pget(i2, i + mi * 32))
           self.maze.append(self.data)
           
       self.d_pos = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
+      self.caves = [[(0, 0), (0, 0)], [(0, 0), (0, 0)], [(0, 0), (0, 0)]]
       for m1 in range(32):
           for m2 in range(32):
               m = self.maze[m1][m2]
@@ -52,6 +53,19 @@ class APP:
                   self.d_pos[4] = (m1, m2)                                    
               elif m == (3, 6):
                   self.d_pos[5] = (m1, m2) 
+              elif m == (7, 1):
+                  self.caves[0][0] = (m1, m2) 
+              elif m == (8, 1):
+                  self.caves[0][1] = (m1, m2)                   
+              elif m == (7, 2):
+                  self.caves[1][0] = (m1, m2) 
+              elif m == (8, 2):
+                  self.caves[1][1] = (m1, m2)   
+              elif m == (7, 3):
+                  self.caves[2][0] = (m1, m2) 
+              elif m == (8, 3):
+                  self.caves[2][1] = (m1, m2)                                    
+
               elif m == (0, 0):
                   self.a_count += 1
                   mii = (m1, m2)
@@ -118,7 +132,9 @@ class APP:
                         (3, 5), (4, 5), (5, 5),
                         (3, 6), (4, 6), (5, 6),
                         (0, 2),
-                        (6, 1)
+                        (6, 1),
+                        (7, 1), (7, 2),(7, 3),
+                        (8, 1), (8, 2),(8, 3),
                         ]
       
       self.wall_list_n = [(1, 0), (3, 0), (4, 0), (5, 0), (6, 0),]
@@ -150,7 +166,7 @@ class APP:
              
       self.enemy_pos = 9
       self.enemy_col = 1
-      pyxel.mouse(False)
+      pyxel.mouse(True)
       
       #System
       self.game_over = False
@@ -169,10 +185,29 @@ class APP:
       self.game_msg = Game_msg.GameMsg()      
       self.ver = "1.20"
       self.map_h_ctl = 0
-      
+      self.buttons = []
+      self.buttons.append(Button(50, 259, 30, 27, 6, 1, "UP"))
+      self.buttons.append(Button(50, 298, 30, 27, 6, 2, "DOWN"))
+      self.buttons.append(Button(15, 280, 30, 27, 6, 3, "LEFT"))
+      self.buttons.append(Button(85, 280, 30, 27, 6, 4, "RIGHT"))
+      self.buttons.append(Button(135, 260, 45, 35, 8, 5, "NO"))
+      self.buttons.append(Button(195, 260, 45, 35, 11, 6, "YES"))
+      self.buttons.append(Button(135, 300, 65, 25, 7, 7, "CHANGE ACTION"))
+      self.hit_button = 0
+      self.view_mode = 2
+      pyxel.screen_mode(self.view_mode)
+
   def update(self):               
       self.bubble_update()           
       
+      if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
+          #if self.view_mode == 2:
+          #    self.view_mode = 0
+          #else:
+          #    self.view_mode += 1
+          #pyxel.screen_mode(self.view_mode)
+          self.chk_button()
+
       if self.end_move == True:                      
           if self.screen < 255:
               self.screen += 6
@@ -186,7 +221,7 @@ class APP:
                   self.game_msg.update("Congratulations", 8)
                   self.game_msg.update("You've cleared the game!", 6)
                   self.game_msg.update("Thank you for playing!", 10)
-                  self.game_msg.update("--------------------------------", 13)
+                  self.game_msg.update("----------------------------", 13)
                   self.game_msg.update("Number of steps: "+str(self.step_num),
                                        7)
                   self.game_msg.update("Exploration Progress: " + 
@@ -224,15 +259,13 @@ class APP:
           
       elif self.game_start == False:
              if (pyxel.btnp(pyxel.KEY_S) or 
-             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
-             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) or
-             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or
-             pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)
+                self.hit_button > 0
              ):
               self.game_start = True
               self.start_move = True
               self.screen = 0
               self.bubble_cnt = -1
+              self.hit_button = 0
       else:
           if self.screen > 0:
               if self.game_end == False:
@@ -244,7 +277,8 @@ class APP:
               #Key input------------------------------------------------------
               #Lever------------------------------------------------------
               if self.key_ipt_num in self.wall_list_l:                  
-                  if pyxel.btnp(pyxel.KEY_Y) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
+                  if pyxel.btnp(pyxel.KEY_Y) or self.hit_button == 6:
+                      self.hit_button = 0
                       self.game_msg.update("Yes", 3)
                       self.game_msg.update("Somewhere a door opened.", 9)
                       ip = self.key_ipt_num[1]
@@ -273,13 +307,15 @@ class APP:
                       elif ip == 6:
                           self.maze[self.d_pos[5][0]][self.d_pos[5][1]]=(0, 0)
                           
-                  elif pyxel.btnp(pyxel.KEY_N) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_B):
+                  elif pyxel.btnp(pyxel.KEY_N) or self.hit_button == 5:
+                      self.hit_button = 0
                       self.game_msg.update("No", 3)
                       self.key_ipt = False
                       self.key_ipt_num = (0, 0)
               #Fence------------------------------------------------------
               elif self.key_ipt_num in self.wall_list_f:
-                  if pyxel.btnp(pyxel.KEY_Y) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
+                  if pyxel.btnp(pyxel.KEY_Y) or self.hit_button == 6:
+                      self.hit_button = 0
                       self.game_msg.update("Yes", 3)
                       self.game_msg.update("Fence removed.", 9)
                       ip = self.key_ipt_num[1]
@@ -296,31 +332,82 @@ class APP:
                       self.dead_end[0] = 0
                       self.wall_update()
                       
-                  elif pyxel.btnp(pyxel.KEY_N) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_B):
+                  elif pyxel.btnp(pyxel.KEY_N) or self.hit_button == 5:
+                      self.hit_button = 0
                       self.game_msg.update("No", 3)
                       self.key_ipt = False
-                      self.key_ipt_num = (0, 0)                      
+                      self.key_ipt_num = (0, 0)     
+              #Cave------------------------------------------------------
+              elif (self.key_ipt_num == (7, 1) or self.key_ipt_num == (8, 1) or 
+                   self.key_ipt_num == (7, 2)  or self.key_ipt_num == (8, 2) or
+                   self.key_ipt_num == (7, 3)  or self.key_ipt_num == (8, 3)):
+                  if pyxel.btnp(pyxel.KEY_Y) or self.hit_button == 6:
+                      self.hit_button = 0
+                      self.game_msg.update("Yes", 3)
+                      self.key_ipt = False                      
+                      if self.key_ipt_num == (7, 1):
+                          self.pos[0] = self.caves[0][1][1]
+                          self.pos[1] = self.caves[0][1][0] + 1
+                      elif self.key_ipt_num == (8, 1):
+                          self.pos[0] = self.caves[0][0][1]
+                          self.pos[1] = self.caves[0][0][0] + 1
+                      elif self.key_ipt_num == (7, 2):
+                          self.pos[0] = self.caves[1][1][1]
+                          self.pos[1] = self.caves[1][1][0] + 1
+                      elif self.key_ipt_num == (8, 2):
+                          self.pos[0] = self.caves[1][0][1]
+                          self.pos[1] = self.caves[1][0][0] + 1                                                
+                      elif self.key_ipt_num == (7, 3):
+                          self.pos[0] = self.caves[2][1][1]
+                          self.pos[1] = self.caves[2][1][0] + 1
+                      elif self.key_ipt_num == (8, 3):
+                          self.pos[0] = self.caves[2][0][1]
+                          self.pos[1] = self.caves[2][0][0] + 1                          
+                      
+                      self.pos_angle = 3
+                      self.pos_history.append((self.pos[0], self.pos[1]))
+                      self.key_ipt_num = (0, 0)     
+                      self.dead_end[0] = 0
+                      self.wall_update()                      
+                  elif pyxel.btnp(pyxel.KEY_N) or self.hit_button == 5:
+                      self.hit_button = 0
+                      self.game_msg.update("No", 3)
+                      self.key_ipt = False
+                      self.key_ipt_num = (0, 0)                                    
               #---------------------------------------------------------------
-              #elif self.key_ipt_num == (2, 1):
-               #   if pyxel.btnp(pyxel.KEY_Y):
-                #      self.start_bubble = True
-                 #     self.bubble_cnt = -1
-                  #    self.bubble_update()
-                   #   self.key_ipt = False
-                    #  self.key_ipt_num = (0, 0)       
-                     # self.end_move = True
-                      #self.screen = 0
+              elif self.key_ipt_num == (2, 1):
+                  if (pyxel.btnp(pyxel.KEY_S) or
+                     self.hit_button > 0):
+                      self.hit_button = 0
+                      self.start_bubble = True
+                      self.bubble_cnt = -1
+                      self.bubble_update()
+                      self.key_ipt = False
+                      self.key_ipt_num = (0, 0)       
+                      self.end_move = True
+                      self.screen = 0
 
               elif self.key_ipt_num == (99, 99) and self.screen < 10:
                   if (pyxel.btnp(pyxel.KEY_R) or
-                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
-                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) or
-                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or
-                     pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
+                     self.hit_button > 0):
+                      self.hit_button = 0
                       self.status_set()                      
           else:
               self.Game_update()
           
+  def chk_button(self):
+      self.hit_button = 0
+      if pyxel.MOUSE_BUTTON_LEFT:
+          for b in self.buttons:
+              if b.check_hit(pyxel.mouse_x, pyxel.mouse_y):
+                  self.hit_button = b.check_hit(pyxel.mouse_x, pyxel.mouse_y)
+              else:
+                  if self.hit_button > 0:
+                      pass
+                  else:
+                      self.hit_button = 0
+      print(self.hit_button)
+
   def Game_update(self):                           
       #Wall reset
       self.wall = [[0, 0],
@@ -341,13 +428,12 @@ class APP:
 
       #Other action-----------------------------------------------------------
       if (pyxel.btnp(pyxel.KEY_SPACE) or
-          pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) or
-          pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y) ):
+          self.hit_button == 7 ):
           if self.other_action_flag == False:
               self.other_action_flag = True
           else:
               self.other_action_flag = False
-      
+          self.hit_button = 0
       if self.other_action_flag == True:
           self.other_action()          
 
@@ -361,7 +447,8 @@ class APP:
       else:
           self.move_flag = False
           #Go ahead
-          if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+          if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W) or self.hit_button == 1:
+              self.hit_button = 0
               self.key_koutyoku_flag = True
               self.dead_end[0] = 0
               if self.pos_angle == 1:
@@ -370,6 +457,7 @@ class APP:
                       self.move_flag = True
                       self.e_msg_F = False
                       self.pos[1] = self.pos[1] - 1
+                      self.enemys_update()
                       self.pos_history.append((self.pos[0], self.pos[1]))
                       self.step_num += 1
                       self.pos_angle = 1
@@ -382,6 +470,7 @@ class APP:
                       self.move_flag = True
                       self.e_msg_F = False
                       self.pos[0] = self.pos[0] + 1
+                      self.enemys_update()
                       self.step_num += 1
                       self.pos_history.append((self.pos[0], self.pos[1]))
                       self.pos_angle = 2
@@ -394,6 +483,7 @@ class APP:
                       self.move_flag = True
                       self.e_msg_F = False
                       self.pos[1] = self.pos[1] + 1
+                      self.enemys_update()
                       self.step_num += 1
                       self.pos_history.append((self.pos[0], self.pos[1]))
                       self.pos_angle = 3
@@ -406,34 +496,17 @@ class APP:
                       self.move_flag = True
                       self.e_msg_F = False
                       self.pos[0] = self.pos[0] - 1     
+                      self.enemys_update()
                       self.step_num += 1
                       self.pos_history.append((self.pos[0], self.pos[1]))
                       self.pos_angle = 4
                       self.scan_update()
                   else:
                       self.chk_other_tile(tile)
-
-              #Enemy action
-              self.e_msg_c = 0          
-              for e in self.enemys:
-                  if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
-                      self.enemy_pos = 0                  
-                      self.enemy_col = e.coller
-                      self.game_over = True
-                  
-                  if self.enemy_pos > 0:
-                      if self.move_flag == True:
-                          e.update()                  
-                      x = abs(self.pos[0] - e.ene_x) 
-                      y = abs(self.pos[1] - e.ene_y) 
-                      if x < 5 and y < 5:                      
-                          self.e_msg_c += 1
-                      if x < 3 and y < 3:
-                          self.e_msg_F = True            
-                      self.e_msg = "Enemies nearby: " + str(self.e_msg_c) 
                       
           #Turn to the back
-          elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+          elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S) or self.hit_button == 2:
+              self.hit_button = 0
               self.key_koutyoku_flag = True
               self.dead_end[0] = 0
               if self.pos_angle == 1:
@@ -444,9 +517,12 @@ class APP:
                   self.pos_angle = 1
               elif self.pos_angle == 4:
                   self.pos_angle = 2
+              #self.move_flag = True
+              #self.enemys_update()
           
           #Turn to the right
-          elif pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.KEY_D) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+          elif pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.KEY_D) or self.hit_button == 4:
+              self.hit_button = 0
               self.key_koutyoku_flag = True
               self.dead_end[0] = 0
               if self.pos_angle == 1:
@@ -457,9 +533,12 @@ class APP:
                   self.pos_angle = 4
               elif self.pos_angle == 4:              
                   self.pos_angle = 1
+              #self.move_flag = True
+              #self.enemys_update()
           
           #Turn to the left
-          elif pyxel.btnp(pyxel.KEY_LEFT)or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+          elif pyxel.btnp(pyxel.KEY_LEFT)or pyxel.btnp(pyxel.KEY_A) or self.hit_button == 3:
+              self.hit_button = 0
               self.key_koutyoku_flag = True
               self.dead_end[0] = 0
               if self.pos_angle == 1:
@@ -469,22 +548,47 @@ class APP:
               elif self.pos_angle == 3:              
                   self.pos_angle = 2
               elif self.pos_angle == 4:
-                  self.pos_angle = 3    
+                  self.pos_angle = 3   
+              #self.move_flag = True 
+              #self.enemys_update()
           #-----------------------------------------------------------------------  
       
       
-      
+  def enemys_update(self):
+      #Enemy action
+      self.e_msg_c = 0          
+      for e in self.enemys:
+          if e.ene_x == self.pos[0] and e.ene_y == self.pos[1]:
+              self.enemy_pos = 0                  
+              self.enemy_col = e.coller
+              self.game_over = True
+                  
+          if self.enemy_pos > 0:
+              if self.move_flag == True:
+                  e.update()                  
+              x = abs(self.pos[0] - e.ene_x) 
+              y = abs(self.pos[1] - e.ene_y) 
+              if x < 5 and y < 5:                      
+                  self.e_msg_c += 1
+              if x < 3 and y < 3:
+                  self.e_msg_F = True            
+              self.e_msg = "Enemies nearby: " + str(self.e_msg_c)       
+
+
   def other_action(self):
-      if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+      if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.KEY_W) or self.hit_button == 1:
+          self.hit_button = 0
           if self.other_action_num > 0:
               self.other_action_num -= 1
         
-      if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+      if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S) or self.hit_button == 2:
+          self.hit_button = 0
           if self.other_action_num < 2:
               self.other_action_num += 1              
       
       if (pyxel.btnp(pyxel.KEY_Y) or
-          pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) ):          
+          self.hit_button == 6 ):        
+          self.hit_button = 0  
           if self.other_action_num == 0:              
               self.other_action_flag = False
               #Paint floor action-----------------------------------------------------      
@@ -580,9 +684,18 @@ class APP:
           self.game_msg.update("Goal position", 3)
           self.game_msg.update("You finally found the gold!", 10)             
           self.game_msg.update("Congratulations!", 10)  
-          self.game_msg.update("Press S key or Any GamePad Button.", 10)  
+          self.game_msg.update("Press S key or ", 10)  
+          self.game_msg.update("Any GamePad Button.", 10)  
           self.key_ipt = True
           self.key_ipt_num = t
+      #Tile Check(Cave)
+      elif (t == (7, 1)  or t == (8, 1) or t == (7, 2)  or t == (8, 2) or
+            t == (7, 3)  or t == (8, 3)):
+          self.game_msg.update("You have found a cave.", 3)          
+          self.game_msg.update("Do you want to enter?", 11)   
+          self.game_msg.update("Y = Yes,  N = No", 11, 1)     
+          self.key_ipt = True
+          self.key_ipt_num = t        
       #Tile Check(Door)
       elif t in self.wall_list_d:
           self.game_msg.update("Door is locked.", 3)
@@ -804,9 +917,9 @@ class APP:
           
           d.draw_bubble(self.bubbles, 1)
           
-          pyxel.text(47, 202, "Press S key or Any GamePad Button to start.", 1)
-          pyxel.text(46, 201, "Press S key or Any GamePad Button to start.", 5)
-          pyxel.text(45, 200, "Press S key or Any GamePad Button to start.", 7)
+          pyxel.text(59, 202, "Press S key or Any Button to start.", 1)
+          pyxel.text(58, 201, "Press S key or Any Button to start.", 5)
+          pyxel.text(57, 200, "Press S key or Any Button to start.", 7)
           
           pyxel.text(205, 55, "Ver." + self.ver, 7)
           
@@ -907,6 +1020,56 @@ class APP:
       else:
           pass
           #self.map_h_ctl = 0
+
+      #Draw Controller--------------------------------------------------------
+      pyxel.rect(0, 255, 256, 100, 0)
+      pyxel.rectb(9, 255, 236, 74, 1)
+      #Draw Controller Button-------------------------------------------------
+      for b in self.buttons:
+          b.draw()
+
+
+
+class Button:
+  def __init__(self, x, y, w, h, c, t, cap=""):
+      self.x = x
+      self.y = y
+      self.w = w
+      self.h = h      
+      self.c = c
+      self.type = t
+      self.col_cng_time = 0
+      self.caption = cap
+      
+  def update(self):
+      if self.col_cng_time > 0:
+          self.col_cng_time -= 1
+  
+  def check_hit(self, x, y):
+      if self.x <= x and (self.x + self.w) >= x:
+          if self.y <= y and (self.y + self.h) >= y:
+              self.col_cng_time = 7
+              return self.type          
+  
+  def draw(self):
+      self.update()
+      c = self.c
+      if self.col_cng_time > 0:
+          if c == 11:
+              c = 3
+          elif c == 8:
+              c = 2                
+          elif c == 6:
+              c = 5                
+          elif c == 7:
+              c = 13                
+
+      pyxel.rect(self.x, self.y, self.w, self.h, c)
+      pyxel.rectb(self.x, self.y, self.w, self.h, 1)
+      pyxel.text(self.x + 5, self.y + (self.h/2-3), self.caption, 0)
+      
+
+
       
 APP()
 

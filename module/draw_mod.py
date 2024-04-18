@@ -511,6 +511,19 @@ def draw_dead_end(d, wl, wld, wll, wll2, wlf, wlm, mz, pos, e = []):
               pyxel.rectb(50, 29, 36, 93, 9)              
               pyxel.rectb(150, 29, 70, 93, 9)
               
+          elif (d[1] == (7, 1) or d[1] == (8, 1) or
+                d[1] == (7, 2) or d[1] == (8, 2) or
+                d[1] == (7, 3) or d[1] == (8, 3)):
+              pyxel.rect(80, 45, 96, 61, 0)
+              pyxel.rectb(80, 45, 96, 61, 12)
+              #pyxel.rectb(85, 50, 86, 51, 5)
+              pyxel.circ(126, 79, 25, 5)
+              pyxel.circ(129, 79, 25, 5)
+              pyxel.circ(125, 80, 23, 1)
+              pyxel.circ(130, 80, 23, 1)
+              pyxel.circ(128, 81, 23, 0)            
+              pyxel.blt(75, 93, 1, 0, 16, 32 * 4, 16, 15)
+
           elif d[1] == (2, 1):             
               pyxel.rect(50, 29, 156, 93, 0)
               pyxel.rectb(50, 29, 156, 93, 10)        
